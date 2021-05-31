@@ -1,0 +1,17 @@
+{
+  "name": "api文档",
+  "version": "0.0.1",
+  "description": "记账接口文档",
+  "title": "记账 api 文档",
+  "url": "http://123.57.160.67:81",
+  "sampleUrl": "http://123.57.160.67:81",
+
+  "header": {
+    "title": "记账 api文档说明",
+    "filename": "header.md"
+  },
+  "template": {
+  	"withCompare": true,
+  	"withGenerator": true
+  }
+}
