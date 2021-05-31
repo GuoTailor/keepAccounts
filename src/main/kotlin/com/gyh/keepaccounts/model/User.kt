@@ -8,7 +8,17 @@ import java.time.LocalDateTime
 
 /**
  * ka_user
- * @author
+ * @author gyh
+ * @apiDefine User
+ * @apiParam {Integer} id 用户id
+ * @apiParam {String} username 用户名
+ * @apiParam {String} [password] 密码
+ * @apiParam {String} phone 地址
+ * @apiParam {String} location 电话
+ * @apiParam {String} name 姓名
+ * @apiParam {String} logistics 物流
+ * @apiParam {String} remark 备注
+ * @apiParam {Date} [createTime] 注册日期
  */
 data class User(
     var id: Int? = null,

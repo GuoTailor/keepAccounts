@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gyh.keepaccounts.mapper.BillMapper">
+    <resultMap id="BaseResultMap" type="com.gyh.keepaccounts.model.Bill">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="type" jdbcType="VARCHAR" property="type"/>
+        <result column="specification" jdbcType="VARCHAR" property="specification"/>
+        <result column="amount" jdbcType="INTEGER" property="amount"/>
+        <result column="price" jdbcType="DECIMAL" property="price"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="payment" jdbcType="INTEGER" property="payment"/>
+        <result column="payment_type" jdbcType="VARCHAR" property="paymentType"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, user_id, `type`, specification, amount, price, remark, payment, payment_type, create_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ka_bill
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from ka_bill
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.gyh.keepaccounts.model.Bill"
+            useGeneratedKeys="true">
+        insert into ka_bill (user_id, `type`, specification,
+                             amount, price, remark,
+                             payment, payment_type, create_time)
+        values (#{userId,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, #{specification,jdbcType=VARCHAR},
+                #{amount,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, #{remark,jdbcType=VARCHAR},
+                #{payment,jdbcType=INTEGER}, #{paymentType,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.gyh.keepaccounts.model.Bill"
+            useGeneratedKeys="true">
+        insert into ka_bill
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="type != null">`type`,</if>
+            <if test="specification != null">specification,</if>
+            <if test="amount != null">amount,</if>
+            <if test="price != null">price,</if>
+            <if test="remark != null">remark,</if>
+            <if test="payment != null">payment,</if>
+            <if test="paymentType != null">payment_type,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId,jdbcType=INTEGER},</if>
+            <if test="type != null">#{type,jdbcType=VARCHAR},</if>
+            <if test="specification != null">#{specification,jdbcType=VARCHAR},</if>
+            <if test="amount != null">#{amount,jdbcType=INTEGER},</if>
+            <if test="price != null">#{price,jdbcType=DECIMAL},</if>
+            <if test="remark != null">#{remark,jdbcType=VARCHAR},</if>
+            <if test="payment != null">#{payment,jdbcType=INTEGER},</if>
+            <if test="paymentType != null">#{paymentType,jdbcType=VARCHAR},</if>
+            <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.gyh.keepaccounts.model.Bill">
+        update ka_bill
+        <set>
+            <if test="userId != null">user_id = #{userId,jdbcType=INTEGER},</if>
+            <if test="type != null">`type` = #{type,jdbcType=VARCHAR},</if>
+            <if test="specification != null">specification = #{specification,jdbcType=VARCHAR},</if>
+            <if test="amount != null">amount = #{amount,jdbcType=INTEGER},</if>
+            <if test="price != null">price = #{price,jdbcType=DECIMAL},</if>
+            <if test="remark != null">remark = #{remark,jdbcType=VARCHAR},</if>
+            <if test="payment != null">payment = #{payment,jdbcType=INTEGER},</if>
+            <if test="paymentType != null">payment_type = #{paymentType,jdbcType=VARCHAR},</if>
+            <if test="createTime != null">create_time = #{createTime,jdbcType=TIMESTAMP},</if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.gyh.keepaccounts.model.Bill">
+        update ka_bill
+        set user_id       = #{userId,jdbcType=INTEGER},
+            `type`        = #{type,jdbcType=VARCHAR},
+            specification = #{specification,jdbcType=VARCHAR},
+            amount        = #{amount,jdbcType=INTEGER},
+            price         = #{price,jdbcType=DECIMAL},
+            remark        = #{remark,jdbcType=VARCHAR},
+            payment       = #{payment,jdbcType=INTEGER},
+            payment_type  = #{paymentType,jdbcType=VARCHAR},
+            create_time   = #{createTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

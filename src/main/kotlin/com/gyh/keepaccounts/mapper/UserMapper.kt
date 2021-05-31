@@ -8,6 +8,7 @@ interface UserMapper {
     fun insertSelective(record: User): Int
     fun selectByPrimaryKey(id: Int): User?
     fun loadUserByUsername(s: String): User?
+    fun findAll(): List<User>
     fun updateByPrimaryKeySelective(record: User): Int
     fun updateByPrimaryKey(record: User): Int
 }

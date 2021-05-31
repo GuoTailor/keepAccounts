@@ -1,3 +1,3 @@
-call copy ibms.sql doc/
-call apidoc -i ./ -o apidoc/
-call scp -r apidoc root@47.107.178.147:/usr/local/exam
+call copy keepaccounts.sql kadoc/
+call apidoc -i ./ -o kadoc/
+call scp -r kadoc root@47.107.178.147:/usr/local/exam
