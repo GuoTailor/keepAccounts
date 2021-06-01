@@ -74,7 +74,7 @@ open class User(
         return password
     }
 
-    fun setPassword(password: String) {
+    fun setPassword(password: String?) {
         this.password = password
     }
 
@@ -82,7 +82,7 @@ open class User(
         return username
     }
 
-    fun setUsername(username: String) {
+    fun setUsername(username: String?) {
         this.username = username
     }
 

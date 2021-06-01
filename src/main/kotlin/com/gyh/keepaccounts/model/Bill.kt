@@ -2,7 +2,6 @@ package com.gyh.keepaccounts.model
 
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.util.*
 
 /**
  * ka_bill
@@ -15,12 +14,12 @@ import java.util.*
  * @apiParam {Integer} amount 数量
  * @apiParam {Decimal} price 价格
  * @apiParam {String} remark 备注
- * @apiParam {Integer} payment 1：已付款，0：未付款
- * @apiParam {String} paymentType 付款类型 wx：微信；zfb：支付宝；rmb：现金
+ * @apiSuccess (返回) {Decimal} payment 已付款金额
+ * @apiSuccess (返回) {String} paymentType 付款类型 wx：微信；zfb：支付宝；rmb：现金；wzf：未支付
  * @apiParam {Date} [createTime] 注册日期
  *
  */
-data class Bill(
+open class Bill(
     var id: Int? = null,
 
     /**
@@ -54,12 +53,12 @@ data class Bill(
     var remark: String? = null,
 
     /**
-     * 1：已付款，0：未付款
+     * 已付款金额
      */
-    var payment: Int? = null,
+    var payment: BigDecimal? = null,
 
     /**
-     * 付款类型 wx：微信；zfb：支付宝；rmb：现金
+     * 付款类型 wx：微信；zfb：支付宝；rmb：现金；wzf：未支付
      */
     var paymentType: String? = null,
 

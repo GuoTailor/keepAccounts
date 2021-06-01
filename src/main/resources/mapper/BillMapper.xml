@@ -9,18 +9,30 @@
         <result column="amount" jdbcType="INTEGER" property="amount"/>
         <result column="price" jdbcType="DECIMAL" property="price"/>
         <result column="remark" jdbcType="VARCHAR" property="remark"/>
-        <result column="payment" jdbcType="INTEGER" property="payment"/>
+        <result column="payment" jdbcType="DECIMAL" property="payment"/>
         <result column="payment_type" jdbcType="VARCHAR" property="paymentType"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
     </resultMap>
+    <resultMap id="BillResponseMap" type="com.gyh.keepaccounts.model.view.BillResponseInfo" extends="BaseResultMap">
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+    </resultMap>
     <sql id="Base_Column_List">
-        id, user_id, `type`, specification, amount, price, remark, payment, payment_type, create_time
+        id, user_id, `type`, specification, amount, price, remark, payment, payment_type,
+    create_time
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from ka_bill
         where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectAll" parameterType="integer" resultMap="BaseResultMap">
+        select
+        kb.id, kb.user_id, kb.`type`, kb.specification, kb.amount, kb.price, kb.remark, kb.payment, kb.payment_type,
+        kb.create_time, ku.username
+        from ka_bill as kb
+        left join ka_user ku on ku.id = kb.user_id
+        <if test="userId != null">where kb.user_id = #{userId,jdbcType=INTEGER}</if>
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete
@@ -34,7 +46,7 @@
                              payment, payment_type, create_time)
         values (#{userId,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, #{specification,jdbcType=VARCHAR},
                 #{amount,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, #{remark,jdbcType=VARCHAR},
-                #{payment,jdbcType=INTEGER}, #{paymentType,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+                #{payment,jdbcType=DECIMAL}, #{paymentType,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
     </insert>
     <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.gyh.keepaccounts.model.Bill"
             useGeneratedKeys="true">
@@ -57,10 +69,25 @@
             <if test="amount != null">#{amount,jdbcType=INTEGER},</if>
             <if test="price != null">#{price,jdbcType=DECIMAL},</if>
             <if test="remark != null">#{remark,jdbcType=VARCHAR},</if>
-            <if test="payment != null">#{payment,jdbcType=INTEGER},</if>
+            <if test="payment != null">#{payment,jdbcType=DECIMAL},</if>
             <if test="paymentType != null">#{paymentType,jdbcType=VARCHAR},</if>
             <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
         </trim>
+    </insert>
+    <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="com.gyh.keepaccounts.model.Bill"
+            useGeneratedKeys="true">
+        <!--@mbg.generated-->
+        insert into ka_bill
+        (user_id, `type`, specification,
+        amount, price, remark,
+        payment, payment_type, create_time)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.userId,jdbcType=INTEGER}, #{item.type,jdbcType=VARCHAR}, #{item.specification,jdbcType=VARCHAR},
+            #{item.amount,jdbcType=INTEGER}, #{item.price,jdbcType=DECIMAL}, #{item.remark,jdbcType=VARCHAR},
+            #{item.payment,jdbcType=DECIMAL}, #{item.paymentType,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=TIMESTAMP})
+        </foreach>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.gyh.keepaccounts.model.Bill">
         update ka_bill
@@ -71,7 +98,7 @@
             <if test="amount != null">amount = #{amount,jdbcType=INTEGER},</if>
             <if test="price != null">price = #{price,jdbcType=DECIMAL},</if>
             <if test="remark != null">remark = #{remark,jdbcType=VARCHAR},</if>
-            <if test="payment != null">payment = #{payment,jdbcType=INTEGER},</if>
+            <if test="payment != null">payment = #{payment,jdbcType=DECIMAL},</if>
             <if test="paymentType != null">payment_type = #{paymentType,jdbcType=VARCHAR},</if>
             <if test="createTime != null">create_time = #{createTime,jdbcType=TIMESTAMP},</if>
         </set>
@@ -85,7 +112,7 @@
             amount        = #{amount,jdbcType=INTEGER},
             price         = #{price,jdbcType=DECIMAL},
             remark        = #{remark,jdbcType=VARCHAR},
-            payment       = #{payment,jdbcType=INTEGER},
+            payment       = #{payment,jdbcType=DECIMAL},
             payment_type  = #{paymentType,jdbcType=VARCHAR},
             create_time   = #{createTime,jdbcType=TIMESTAMP}
         where id = #{id,jdbcType=INTEGER}

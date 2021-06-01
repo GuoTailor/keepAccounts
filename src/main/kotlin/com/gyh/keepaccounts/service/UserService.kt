@@ -6,6 +6,7 @@ import com.gyh.keepaccounts.mapper.UserMapper
 import com.gyh.keepaccounts.model.PageView
 import com.gyh.keepaccounts.model.ResponseInfo
 import com.gyh.keepaccounts.model.User
+import com.gyh.keepaccounts.model.view.UserResponseInfo
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.userdetails.UserDetails
@@ -31,19 +32,18 @@ class UserService(val passwordEncoder: PasswordEncoder) : UserDetailsService {
     @Resource
     lateinit var userMapper: UserMapper
 
-    override fun loadUserByUsername(s: String): UserDetails {
+    override fun loadUserByUsername(s: String): UserResponseInfo {
         val user = userMapper.loadUserByUsername(s)
             ?: throw UsernameNotFoundException("用户：" + s + "不存在")
-
-        return user
+        return loadFile(user)
     }
 
-    fun getAllUser(page: Int, size: Int): PageView<User> {
+    fun getAllUser(page: Int, size: Int): PageView<UserResponseInfo> {
         PageHelper.startPage<Any>(page, size)
-        return PageView.build(userMapper.findAll())
+        return PageView.build(userMapper.findAll().map { loadFile(it) })
     }
 
-    fun getById(id: Int) = userMapper.selectByPrimaryKey(id)
+    fun getById(id: Int) = loadFile(userMapper.selectByPrimaryKey(id))
 
     /**
      * 添加用户
@@ -51,7 +51,7 @@ class UserService(val passwordEncoder: PasswordEncoder) : UserDetailsService {
      * @return user
      */
     fun register(user: User, files: Array<MultipartFile>): ResponseInfo<*> {
-        user.password?.let { user.setPassword(passwordEncoder.encode(it)) }
+        user.password?.let { user.password = passwordEncoder.encode(it) }
         userMapper.insertSelective(user)
         updateFiles(user.id!!, files)
         return ResponseInfo.ok(user)
@@ -62,7 +62,7 @@ class UserService(val passwordEncoder: PasswordEncoder) : UserDetailsService {
      */
     fun update(user: User, files: Array<MultipartFile>?): Int {
         val userId = user.id!!
-        user.password?.let { user.setPassword(passwordEncoder.encode(it)) }
+        user.password?.let { user.password = passwordEncoder.encode(it) }
         if (files?.isNotEmpty() == true) {
             updateFiles(userId, files)
         }
@@ -107,9 +107,10 @@ class UserService(val passwordEncoder: PasswordEncoder) : UserDetailsService {
         return true
     }
 
-    fun loadFile(user: User) {
-        if (user.id != null) {
+    fun loadFile(user: User?): UserResponseInfo {
+        return if (user?.id != null) {
             val root = File("$rootPath${File.separator}${user.id}")
-        }
+            UserResponseInfo(user, root.list()?.asList() ?: listOf())
+        } else UserResponseInfo(listOf())
     }
 }

@@ -3,6 +3,7 @@ package com.gyh.keepaccounts.controller
 import com.gyh.keepaccounts.model.PageView
 import com.gyh.keepaccounts.model.ResponseInfo
 import com.gyh.keepaccounts.model.User
+import com.gyh.keepaccounts.model.view.UserResponseInfo
 import com.gyh.keepaccounts.service.UserService
 import org.apache.coyote.RequestInfo
 import org.springframework.beans.factory.annotation.Autowired
@@ -45,7 +46,7 @@ class UserController {
     fun getAllUser(
         @RequestParam(required = false) page: Int?,
         @RequestParam(required = false) size: Int?
-    ): ResponseInfo<PageView<User>> {
+    ): ResponseInfo<PageView<UserResponseInfo>> {
         return ResponseInfo.ok(userService.getAllUser(page ?: 1, size ?: 30))
     }
 
@@ -70,7 +71,7 @@ class UserController {
      * @apiPermission user
      */
     @GetMapping("/username")
-    fun getByUsername(@RequestParam username: String): ResponseInfo<UserDetails> {
+    fun getByUsername(@RequestParam username: String): ResponseInfo<UserResponseInfo> {
         return ResponseInfo.ok(userService.loadUserByUsername(username))
     }
 
@@ -95,7 +96,7 @@ class UserController {
      * @apiPermission user
      */
     @GetMapping("/id")
-    fun getById(@RequestParam id: Int): ResponseInfo<User?> {
+    fun getById(@RequestParam id: Int): ResponseInfo<UserResponseInfo?> {
         return ResponseInfo.ok(userService.getById(id))
     }
 
