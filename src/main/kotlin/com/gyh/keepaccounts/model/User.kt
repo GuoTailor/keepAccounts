@@ -5,7 +5,6 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.time.LocalDateTime
 
-
 /**
  * ka_user
  * @author gyh
@@ -20,7 +19,7 @@ import java.time.LocalDateTime
  * @apiParam {String} remark 备注
  * @apiParam {Date} [createTime] 注册日期
  */
-data class User(
+open class User(
     var id: Int? = null,
 
     /**
@@ -54,6 +53,11 @@ data class User(
     var logistics: String? = null,
 
     /**
+     * 照片
+     */
+    var photos: List<String> = listOf(),
+
+    /**
      * 备注
      */
     var remark: String? = null,
@@ -65,6 +69,7 @@ data class User(
         return listOf(role)
     }
 
+    @JsonIgnore
     override fun getPassword(): String? {
         return password
     }

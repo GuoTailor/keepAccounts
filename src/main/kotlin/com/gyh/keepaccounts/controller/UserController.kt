@@ -4,9 +4,12 @@ import com.gyh.keepaccounts.model.PageView
 import com.gyh.keepaccounts.model.ResponseInfo
 import com.gyh.keepaccounts.model.User
 import com.gyh.keepaccounts.service.UserService
+import org.apache.coyote.RequestInfo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
+import java.time.LocalDateTime
 
 /**
  * Created by gyh on 2021/5/31
@@ -102,6 +105,7 @@ class UserController {
      * @apiName addUser
      * @apiVersion 0.0.1
      * @apiUse User
+     * @apiParam {File} files 图片列表
      * @apiSuccessExample {json} 成功返回:
      * {"code": 0,"msg": "成功","data": {}}
      * @apiSuccess (返回) {Integer} id 用户id
@@ -117,8 +121,26 @@ class UserController {
      * @apiPermission user
      */
     @PostMapping
-    fun addUser(@RequestBody user: User): ResponseInfo<User> {
-        return ResponseInfo.ok(userService.register(user))
+    fun addUser(
+        @RequestParam("username") username: String,
+        @RequestParam("password", required = false) password: String?,
+        @RequestParam("location", required = false) location: String?,
+        @RequestParam("phone", required = false) phone: String?,
+        @RequestParam("name", required = false) name: String?,
+        @RequestParam("logistics", required = false) logistics: String?,
+        @RequestParam("createTime", required = false) createTime: LocalDateTime?,
+        @RequestParam("files") files: Array<MultipartFile>
+    ): ResponseInfo<*> {
+        val user = User(
+            username = username,
+            password = password,
+            location = location,
+            phone = phone,
+            name = name,
+            logistics = logistics,
+            createTime = createTime
+        )
+        return userService.register(user, files)
     }
 
     /**
@@ -127,6 +149,7 @@ class UserController {
      * @apiName updateUser
      * @apiVersion 0.0.1
      * @apiUse User
+     * @apiParam {File} files 图片列表
      * @apiSuccessExample {json} 成功返回:
      * {"code": 0,"msg": "成功","data": {}}
      * @apiSuccess (返回) {Integer} id 用户id
@@ -142,8 +165,40 @@ class UserController {
      * @apiPermission user
      */
     @PutMapping
-    fun updateUser(@RequestBody user: User): ResponseInfo<Int> {
-        return ResponseInfo.ok(userService.update(user))
+    fun updateUser(@RequestParam("username") username: String,
+                   @RequestParam("password", required = false) password: String?,
+                   @RequestParam("location", required = false) location: String?,
+                   @RequestParam("phone", required = false) phone: String?,
+                   @RequestParam("name", required = false) name: String?,
+                   @RequestParam("logistics", required = false) logistics: String?,
+                   @RequestParam("createTime", required = false) createTime: LocalDateTime?,
+                   @RequestParam("files") files: Array<MultipartFile>): ResponseInfo<Int> {
+        val user = User(
+            username = username,
+            password = password,
+            location = location,
+            phone = phone,
+            name = name,
+            logistics = logistics,
+            createTime = createTime
+        )
+        return ResponseInfo.ok(userService.update(user, files))
+    }
+
+    /**
+     * @api {delete} /user/file 删除用户图片
+     * @apiDescription 删除用户图片
+     * @apiName deleteFile
+     * @apiVersion 0.0.1
+     * @apiParam {String} path 图片路径
+     * @apiSuccessExample {json} 成功返回:
+     * {"code": 0,"msg": "成功","data": {}}
+     * @apiGroup User
+     * @apiPermission user
+     */
+    @DeleteMapping("/file")
+    fun deleteFile(path: String): ResponseInfo<Any> {
+        return ResponseInfo.ok(userService.deleteFile(path))
     }
 
     /**
