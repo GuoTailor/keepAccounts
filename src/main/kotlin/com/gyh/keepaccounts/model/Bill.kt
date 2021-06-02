@@ -14,8 +14,8 @@ import java.time.LocalDateTime
  * @apiParam {Integer} amount 数量
  * @apiParam {Decimal} price 价格
  * @apiParam {String} remark 备注
- * @apiSuccess (返回) {Decimal} payment 已付款金额
- * @apiSuccess (返回) {String} paymentType 付款类型 wx：微信；zfb：支付宝；rmb：现金；wzf：未支付
+ * @apiParam {Decimal} payment 已付款金额
+ * @apiParam {String} paymentType 付款类型 wx：微信；zfb：支付宝；rmb：现金；wzf：未支付
  * @apiParam {Date} [createTime] 注册日期
  *
  */

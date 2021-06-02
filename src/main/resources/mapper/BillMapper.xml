@@ -20,13 +20,23 @@
         id, user_id, `type`, specification, amount, price, remark, payment, payment_type,
     create_time
     </sql>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from ka_bill
-        where id = #{id,jdbcType=INTEGER}
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BillResponseMap">
+        select kb.id,
+               kb.user_id,
+               kb.`type`,
+               kb.specification,
+               kb.amount,
+               kb.price,
+               kb.remark,
+               kb.payment,
+               kb.payment_type,
+               kb.create_time,
+               ku.username
+        from ka_bill as kb
+                 left join ka_user ku on ku.id = kb.user_id
+        where kb.id = #{id,jdbcType=INTEGER}
     </select>
-    <select id="selectAll" parameterType="integer" resultMap="BaseResultMap">
+    <select id="selectAll" parameterType="integer" resultMap="BillResponseMap">
         select
         kb.id, kb.user_id, kb.`type`, kb.specification, kb.amount, kb.price, kb.remark, kb.payment, kb.payment_type,
         kb.create_time, ku.username

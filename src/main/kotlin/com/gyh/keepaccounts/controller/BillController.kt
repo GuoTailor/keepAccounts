@@ -72,4 +72,37 @@ class BillController {
     ): ResponseInfo<PageView<BillResponseInfo>> {
         return ResponseInfo.ok(billService.getAllBill(page ?: 1, size ?: 30, userId))
     }
+
+    /**
+     * @api {get} /bill 根据id查询账单
+     * @apiDescription 根据id查询账单
+     * @apiName getBill
+     * @apiVersion 0.0.1
+     * @apiParam {Integer} id 账单id
+     * @apiSuccessExample {json} 成功返回:
+     * {"code": 0,"msg": "成功","data": {}}
+     * @apiUse BillResponseInfo
+     * @apiGroup Bill
+     * @apiPermission user
+     */
+    @GetMapping
+    fun getBill(@RequestParam id: Int): ResponseInfo<BillResponseInfo> {
+        return ResponseInfo.ok(billService.getBill(id))
+    }
+
+    /**
+     * @api {delete} /bill 根据id删除账单
+     * @apiDescription 根据id删除账单
+     * @apiName deleteBill
+     * @apiVersion 0.0.1
+     * @apiParam {Integer} id 账单id
+     * @apiSuccessExample {json} 成功返回:
+     * {"code": 0,"msg": "成功","data": {}}
+     * @apiGroup Bill
+     * @apiPermission user
+     */
+    @DeleteMapping
+    fun deleteBill(id: Int): ResponseInfo<Int> {
+        return ResponseInfo.ok(billService.deleteBill(id))
+    }
 }

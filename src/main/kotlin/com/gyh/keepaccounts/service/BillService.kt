@@ -29,4 +29,13 @@ class BillService {
         PageHelper.startPage<Any>(page, size)
         return PageView.build(billMapper.selectAll(userId))
     }
+
+    fun getBill(id: Int): BillResponseInfo {
+        return billMapper.selectByPrimaryKey(id) ?: error("不存在该订单：$id")
+    }
+
+    fun deleteBill(id: Int): Int {
+        return billMapper.deleteByPrimaryKey(id)
+    }
+
 }
