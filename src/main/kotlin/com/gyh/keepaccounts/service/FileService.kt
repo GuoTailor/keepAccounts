@@ -15,34 +15,25 @@ import java.util.*
 @Service
 class FileService {
     private val logger = LoggerFactory.getLogger(this.javaClass.simpleName)
-    @Value("\${fileUploadPath}")
-    lateinit var rootPath: String
 
-    fun updateFiles(userId: Int, files: Array<MultipartFile>): Boolean {
-        files.forEach { file ->
+    fun updateFiles(userId: Int, files: Array<MultipartFile>): List<String> {
+        return files.map { file ->
             val suffix = file.originalFilename?.split(".")?.let {
                 if (it.lastIndex > 0) "." + it[it.lastIndex] else null
             }
-            val fileName = UUID.randomUUID().toString() + (suffix ?: "")
-            val dest = File("$rootPath${File.separator}$userId${File.separator}$fileName")
-            if (!dest.parentFile.exists()) {
-                val result = dest.parentFile.mkdirs()  //新建文件夹
-                if (!result) return false
-            }
-            file.transferTo(dest.toPath())
+            val fileName = userId.toString() + "/" + UUID.randomUUID().toString() + (suffix ?: "")
+            OSSClient.updateFile(fileName, file.inputStream)
         }
-        return true
     }
 
     fun loadFile(user: User?): UserResponseInfo {
         return if (user?.id != null) {
-            val root = File("$rootPath${File.separator}${user.id}")
-            UserResponseInfo(user, root.list()?.asList() ?: listOf())
+            val root = user.imgs?.split(" ")
+            UserResponseInfo(user, root ?: listOf())
         } else UserResponseInfo(listOf())
     }
 
     fun deleteFile(path: String): Boolean {
-        logger.info(path)
-        return File(path).delete()
+        return OSSClient.deleteFile(path)
     }
 }

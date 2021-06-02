@@ -8,6 +8,7 @@ import com.gyh.keepaccounts.model.ResponseInfo
 import com.gyh.keepaccounts.model.User
 import com.gyh.keepaccounts.model.view.UserResponseInfo
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -29,21 +30,24 @@ class UserService(val passwordEncoder: PasswordEncoder) : UserDetailsService {
     @Value("\${fileUploadPath}")
     lateinit var rootPath: String
 
+    @Autowired
+    lateinit var fileService: FileService
+
     @Resource
     lateinit var userMapper: UserMapper
 
     override fun loadUserByUsername(s: String): UserResponseInfo {
         val user = userMapper.loadUserByUsername(s)
             ?: throw UsernameNotFoundException("用户：" + s + "不存在")
-        return loadFile(user)
+        return fileService.loadFile(user)
     }
 
     fun getAllUser(page: Int, size: Int): PageView<UserResponseInfo> {
         PageHelper.startPage<Any>(page, size)
-        return PageView.build(userMapper.findAll().map { loadFile(it) })
+        return PageView.build(userMapper.findAll().map { fileService.loadFile(it) })
     }
 
-    fun getById(id: Int) = loadFile(userMapper.selectByPrimaryKey(id))
+    fun getById(id: Int) = fileService.loadFile(userMapper.selectByPrimaryKey(id))
 
     /**
      * 添加用户
@@ -53,7 +57,7 @@ class UserService(val passwordEncoder: PasswordEncoder) : UserDetailsService {
     fun register(user: User, files: Array<MultipartFile>): ResponseInfo<*> {
         user.password?.let { user.password = passwordEncoder.encode(it) }
         userMapper.insertSelective(user)
-        updateFiles(user.id!!, files)
+        fileService.updateFiles(user.id!!, files)
         return ResponseInfo.ok(user)
     }
 
@@ -64,14 +68,11 @@ class UserService(val passwordEncoder: PasswordEncoder) : UserDetailsService {
         val userId = user.id!!
         user.password?.let { user.password = passwordEncoder.encode(it) }
         if (files?.isNotEmpty() == true) {
-            updateFiles(userId, files)
+            fileService.updateFiles(userId, files)
         }
         return userMapper.updateByPrimaryKeySelective(user)
     }
 
-    fun deleteFile(path: String) {
-        logger.info(path)
-    }
 
     fun deleteUser(id: Int): Int {
         val root = File("$rootPath${File.separator}$id")
@@ -80,37 +81,4 @@ class UserService(val passwordEncoder: PasswordEncoder) : UserDetailsService {
         return userMapper.deleteByPrimaryKey(id)
     }
 
-    fun updateFiles(userId: Int, files: Array<MultipartFile>): Boolean {
-        files.forEach { file ->
-            val root = File("$rootPath${File.separator}$userId")
-            val suffix = file.originalFilename?.split(".")?.let {
-                if (it.lastIndex > 0) "." + it[it.lastIndex] else null
-            }
-            val list = root.list()
-            var index = 1
-            if (list == null) {
-                root.mkdirs()
-            } else {
-                val suffixs =
-                    list.map { f -> f.split(".").let { if (it.lastIndex > 0) "." + it[it.lastIndex] else f } }
-                while (!suffixs.contains(index.toString())) {
-                    index++
-                }
-            }
-            val dest = File("$rootPath${File.separator}$userId${File.separator}$index$suffix")
-            if (!dest.parentFile.exists()) {
-                val result = dest.parentFile.mkdirs()  //新建文件夹
-                if (!result) return false
-            }
-            file.transferTo(dest.toPath())
-        }
-        return true
-    }
-
-    fun loadFile(user: User?): UserResponseInfo {
-        return if (user?.id != null) {
-            val root = File("$rootPath${File.separator}${user.id}")
-            UserResponseInfo(user, root.list()?.asList() ?: listOf())
-        } else UserResponseInfo(listOf())
-    }
 }

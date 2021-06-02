@@ -1,6 +1,5 @@
 package com.gyh.keepaccounts.common;
 
-import com.gyh.keepaccounts.model.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
 

@@ -1,19 +1,29 @@
 package com.gyh.keepaccounts.service
 
 import com.aliyun.oss.OSSClientBuilder
+import java.io.InputStream
 
 /**
  * Created by GYH on 2021/6/2
  */
-class OSSClient {
-    // Endpoint以杭州为例，其它Region请按实际情况填写。
-    val endpoint = "https://oss-cn-hangzhou.aliyuncs.com"
-
-    // 阿里云主账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM账号进行API访问或日常运维，请登录RAM控制台创建RAM账号。
-    val accessKeyId = "<yourAccessKeyId>"
-    val accessKeySecret = "<yourAccessKeySecret>"
-
+object OSSClient {
+    private const val endpoint = "https://oss-cn-shenzhen.aliyuncs.com"
+    private const val bucket = "repair-h"
+    private const val baseUrl = "https://repair-h.oss-cn-shenzhen.aliyuncs.com"
+    private const val accessKeyId = "x"
+    private const val accessKeySecret = "xx"
+    const val path = "keepaccounts/"
     // 创建OSSClient实例。
-    val ossClient = OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret)
+    private val ossClient = OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret)
 
+    fun updateFile(objectName : String, inputStream: InputStream): String {
+        val putObject = ossClient.putObject(bucket, path + objectName.replace(" ", ""), inputStream)
+        if (putObject.response.isSuccessful) {
+            return path + objectName
+        } else error("文件上传失败")
+    }
+
+    fun deleteFile(objectName : String): Boolean {
+        return ossClient.deleteObject(bucket, objectName).response.isSuccessful
+    }
 }

@@ -58,6 +58,11 @@ open class User(
     var photos: List<String> = listOf(),
 
     /**
+     * 图片地址，用空格分割
+     */
+    var imgs: String? = null,
+
+    /**
      * 备注
      */
     var remark: String? = null,
