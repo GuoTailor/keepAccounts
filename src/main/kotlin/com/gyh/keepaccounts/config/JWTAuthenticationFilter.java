@@ -1,6 +1,7 @@
 package com.gyh.keepaccounts.config;
 
 import com.gyh.keepaccounts.common.JwtUtil;
+import com.gyh.keepaccounts.model.User;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

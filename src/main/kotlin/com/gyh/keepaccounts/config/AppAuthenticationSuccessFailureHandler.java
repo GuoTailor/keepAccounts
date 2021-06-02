@@ -3,6 +3,7 @@ package com.gyh.keepaccounts.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gyh.keepaccounts.common.JwtUtil;
 import com.gyh.keepaccounts.model.ResponseInfo;
+import com.gyh.keepaccounts.model.User;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;

@@ -18,6 +18,7 @@ target/
 *.iws
 *.iml
 *.ipr
+nmka.txt
 
 ### NetBeans ###
 /nbproject/private/

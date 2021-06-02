@@ -47,38 +47,47 @@ class UserService(val passwordEncoder: PasswordEncoder) : UserDetailsService {
         return PageView.build(userMapper.findAll().map { fileService.loadFile(it) })
     }
 
-    fun getById(id: Int) = fileService.loadFile(userMapper.selectByPrimaryKey(id))
+    fun getById(id: Int) = fileService.loadFile(userMapper.selectByPrimaryKey(id) ?: error("用户：" + id + "不存在"))
 
     /**
      * 添加用户
      * @param user user
      * @return user
      */
-    fun register(user: User, files: Array<MultipartFile>): ResponseInfo<*> {
+    fun register(user: UserResponseInfo): ResponseInfo<*> {
         user.password?.let { user.password = passwordEncoder.encode(it) }
+        user.imgs = user.files?.joinToString(separator = " ") { it }
         userMapper.insertSelective(user)
-        fileService.updateFiles(user.id!!, files)
         return ResponseInfo.ok(user)
     }
 
     /**
      * 更新用户
      */
-    fun update(user: User, files: Array<MultipartFile>?): Int {
-        val userId = user.id!!
+    fun update(user: UserResponseInfo): Int {
+        user.imgs = user.files?.joinToString(separator = " ") { it }
         user.password?.let { user.password = passwordEncoder.encode(it) }
-        if (files?.isNotEmpty() == true) {
-            fileService.updateFiles(userId, files)
-        }
         return userMapper.updateByPrimaryKeySelective(user)
     }
 
-
+    /**
+     * 删除用户
+     */
     fun deleteUser(id: Int): Int {
-        val root = File("$rootPath${File.separator}$id")
-        root.listFiles()?.map { it.delete() }
-        root.delete()
+        val user = userMapper.selectByPrimaryKey(id)
+        fileService.deleteAll(user?.imgs ?: "")
         return userMapper.deleteByPrimaryKey(id)
     }
 
+    fun uploadFile(files: Array<MultipartFile>): List<String> {
+        return fileService.updateFiles(files)
+    }
+
+    fun uploadFile(file: MultipartFile): String {
+        return fileService.updateFile(file)
+    }
+
+    fun deleteFile(path: String) {
+        fileService.deleteFile(path)
+    }
 }

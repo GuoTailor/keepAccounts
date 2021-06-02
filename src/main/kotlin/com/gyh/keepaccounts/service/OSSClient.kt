@@ -2,7 +2,11 @@ package com.gyh.keepaccounts.service
 
 import com.aliyun.oss.OSSClientBuilder
 import com.aliyun.oss.model.DeleteObjectsRequest
+import com.aliyun.oss.model.ListObjectsRequest
+import com.aliyun.oss.model.ObjectListing
 import java.io.InputStream
+import java.util.*
+
 
 /**
  * Created by GYH on 2021/6/2
@@ -17,14 +21,14 @@ object OSSClient {
     // 创建OSSClient实例。
     private val ossClient = OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret)
 
-    fun updateFile(objectName : String, inputStream: InputStream): String {
+    fun updateFile(objectName: String, inputStream: InputStream): String {
         val putObject = ossClient.putObject(bucket, path + objectName.replace(" ", ""), inputStream)
         if (putObject.response.isSuccessful) {
             return path + objectName
         } else error("文件上传失败")
     }
 
-    fun deleteFile(objectName : String): Boolean {
+    fun deleteFile(objectName: String): Boolean {
         return ossClient.deleteObject(bucket, objectName).response.isSuccessful
     }
 
@@ -33,5 +37,6 @@ object OSSClient {
         deleteObjectsRequest.keys = objectNames
         deleteObjectsRequest.isQuiet = true
         ossClient.deleteObjects(deleteObjectsRequest)
+        ossClient.deleteObject(bucket, path)
     }
 }

@@ -106,7 +106,7 @@ class UserController {
      * @apiName addUser
      * @apiVersion 0.0.1
      * @apiUse User
-     * @apiParam {File} files 图片列表
+     * @apiParam {String} files 图片列表
      * @apiSuccessExample {json} 成功返回:
      * {"code": 0,"msg": "成功","data": {}}
      * @apiSuccess (返回) {Integer} id 用户id
@@ -122,26 +122,8 @@ class UserController {
      * @apiPermission user
      */
     @PostMapping
-    fun addUser(
-        @RequestParam("username") username: String,
-        @RequestParam("password", required = false) password: String?,
-        @RequestParam("location", required = false) location: String?,
-        @RequestParam("phone", required = false) phone: String?,
-        @RequestParam("name", required = false) name: String?,
-        @RequestParam("logistics", required = false) logistics: String?,
-        @RequestParam("createTime", required = false) createTime: LocalDateTime?,
-        @RequestParam("files") files: Array<MultipartFile>
-    ): ResponseInfo<*> {
-        val user = User(
-            username = username,
-            password = password,
-            location = location,
-            phone = phone,
-            name = name,
-            logistics = logistics,
-            createTime = createTime
-        )
-        return userService.register(user, files)
+    fun addUser(@RequestBody user: UserResponseInfo): ResponseInfo<*> {
+        return userService.register(user)
     }
 
     /**
@@ -150,7 +132,7 @@ class UserController {
      * @apiName updateUser
      * @apiVersion 0.0.1
      * @apiUse User
-     * @apiParam {File} files 图片列表
+     * @apiParam {String} files 图片列表
      * @apiSuccessExample {json} 成功返回:
      * {"code": 0,"msg": "成功","data": {}}
      * @apiSuccess (返回) {Integer} id 用户id
@@ -166,24 +148,8 @@ class UserController {
      * @apiPermission user
      */
     @PutMapping
-    fun updateUser(@RequestParam("username") username: String,
-                   @RequestParam("password", required = false) password: String?,
-                   @RequestParam("location", required = false) location: String?,
-                   @RequestParam("phone", required = false) phone: String?,
-                   @RequestParam("name", required = false) name: String?,
-                   @RequestParam("logistics", required = false) logistics: String?,
-                   @RequestParam("createTime", required = false) createTime: LocalDateTime?,
-                   @RequestParam("files") files: Array<MultipartFile>): ResponseInfo<Int> {
-        val user = User(
-            username = username,
-            password = password,
-            location = location,
-            phone = phone,
-            name = name,
-            logistics = logistics,
-            createTime = createTime
-        )
-        return ResponseInfo.ok(userService.update(user, files))
+    fun updateUser(@RequestBody user: UserResponseInfo): ResponseInfo<Int> {
+        return ResponseInfo.ok(userService.update(user))
     }
 
     /**
@@ -200,6 +166,38 @@ class UserController {
     @DeleteMapping("/file")
     fun deleteFile(path: String): ResponseInfo<Any> {
         return ResponseInfo.ok(userService.deleteFile(path))
+    }
+
+    /**
+     * @api {put} /user/files 上传多个用户图片
+     * @apiDescription 上传多个用户图片
+     * @apiName uploadFiles
+     * @apiVersion 0.0.1
+     * @apiParam {File} files 图片
+     * @apiSuccessExample {json} 成功返回:
+     * {"code": 0,"msg": "成功","data": ["1.png", "2.png"]}
+     * @apiGroup User
+     * @apiPermission user
+     */
+    @PutMapping("/files")
+    fun uploadFiles(@RequestParam files: Array<MultipartFile>): ResponseInfo<List<String>> {
+        return ResponseInfo.ok(userService.uploadFile(files))
+    }
+
+    /**
+     * @api {put} /user/file 上传单个用户图片
+     * @apiDescription 上传单个用户图片
+     * @apiName uploadFile
+     * @apiVersion 0.0.1
+     * @apiParam {File} file 图片
+     * @apiSuccessExample {json} 成功返回:
+     * {"code": 0,"msg": "成功","data": "1.jpeg"}
+     * @apiGroup User
+     * @apiPermission user
+     */
+    @PutMapping("/file")
+    fun uploadFile(@RequestParam file: MultipartFile): ResponseInfo<String> {
+        return ResponseInfo.ok(userService.uploadFile(file))
     }
 
     /**

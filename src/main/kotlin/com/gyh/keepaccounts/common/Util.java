@@ -1,5 +1,6 @@
 package com.gyh.keepaccounts.common;
 
+import com.gyh.keepaccounts.model.User;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
