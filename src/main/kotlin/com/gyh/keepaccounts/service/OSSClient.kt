@@ -1,6 +1,7 @@
 package com.gyh.keepaccounts.service
 
 import com.aliyun.oss.OSSClientBuilder
+import com.aliyun.oss.model.DeleteObjectsRequest
 import java.io.InputStream
 
 /**
@@ -25,5 +26,12 @@ object OSSClient {
 
     fun deleteFile(objectName : String): Boolean {
         return ossClient.deleteObject(bucket, objectName).response.isSuccessful
+    }
+
+    fun deleteFile(objectNames: List<String>) {
+        val deleteObjectsRequest = DeleteObjectsRequest(bucket)
+        deleteObjectsRequest.keys = objectNames
+        deleteObjectsRequest.isQuiet = true
+        ossClient.deleteObjects(deleteObjectsRequest)
     }
 }
