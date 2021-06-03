@@ -4,7 +4,7 @@ package com.gyh.keepaccounts.model
  * Created by gyh on 2021/2/4
  */
 class ResponseInfo<T> {
-    var code = 0
+    var code = 1
     var msg: String? = null
     var data: T? = null
 
@@ -22,8 +22,8 @@ class ResponseInfo<T> {
     constructor() {}
 
     companion object {
-        const val OK_CODE = 0
-        const val FAILED_CODE = 1
+        const val OK_CODE = 1
+        const val FAILED_CODE = 0
         @JvmStatic
         fun <T> ok(): ResponseInfo<T> {
             return ResponseInfo(OK_CODE, "成功")

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gyh.keepaccounts.mapper.PurchaseMapper">
+    <resultMap id="BaseResultMap" type="com.gyh.keepaccounts.model.Purchase">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="project" jdbcType="VARCHAR" property="project"/>
+        <result column="counterparty" jdbcType="VARCHAR" property="counterparty"/>
+        <result column="money" jdbcType="DECIMAL" property="money"/>
+        <result column="payment_type" jdbcType="VARCHAR" property="paymentType"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, project, counterparty, money, payment_type, remark, create_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ka_purchase
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="findAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ka_purchase
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from ka_purchase
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.gyh.keepaccounts.model.Purchase"
+            useGeneratedKeys="true">
+        insert into ka_purchase (project, counterparty, money,
+                                 payment_type, remark, create_time)
+        values (#{project,jdbcType=VARCHAR}, #{counterparty,jdbcType=VARCHAR}, #{money,jdbcType=DECIMAL},
+                #{paymentType,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.gyh.keepaccounts.model.Purchase"
+            useGeneratedKeys="true">
+        insert into ka_purchase
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="project != null">project,</if>
+            <if test="counterparty != null">counterparty,</if>
+            <if test="money != null">money,</if>
+            <if test="paymentType != null">payment_type,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="project != null">#{project,jdbcType=VARCHAR},</if>
+            <if test="counterparty != null">#{counterparty,jdbcType=VARCHAR},</if>
+            <if test="money != null">#{money,jdbcType=DECIMAL},</if>
+            <if test="paymentType != null">#{paymentType,jdbcType=VARCHAR},</if>
+            <if test="remark != null">#{remark,jdbcType=VARCHAR},</if>
+            <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.gyh.keepaccounts.model.Purchase">
+        update ka_purchase
+        <set>
+            <if test="project != null">project = #{project,jdbcType=VARCHAR},</if>
+            <if test="counterparty != null">counterparty = #{counterparty,jdbcType=VARCHAR},</if>
+            <if test="money != null">money = #{money,jdbcType=DECIMAL},</if>
+            <if test="paymentType != null">payment_type = #{paymentType,jdbcType=VARCHAR},</if>
+            <if test="remark != null">remark = #{remark,jdbcType=VARCHAR},</if>
+            <if test="createTime != null">create_time = #{createTime,jdbcType=TIMESTAMP},</if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.gyh.keepaccounts.model.Purchase">
+        update ka_purchase
+        set project      = #{project,jdbcType=VARCHAR},
+            counterparty = #{counterparty,jdbcType=VARCHAR},
+            money        = #{money,jdbcType=DECIMAL},
+            payment_type = #{paymentType,jdbcType=VARCHAR},
+            remark       = #{remark,jdbcType=VARCHAR},
+            create_time  = #{createTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

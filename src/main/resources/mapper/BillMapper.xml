@@ -84,19 +84,17 @@
             <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
         </trim>
     </insert>
-    <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="com.gyh.keepaccounts.model.Bill"
-            useGeneratedKeys="true">
+    <insert id="batchInsert" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
         <!--@mbg.generated-->
         insert into ka_bill
         (user_id, `type`, specification,
         amount, price, remark,
-        payment, payment_type, create_time)
+        payment, payment_type)
         values
         <foreach collection="list" item="item" separator=",">
             (#{item.userId,jdbcType=INTEGER}, #{item.type,jdbcType=VARCHAR}, #{item.specification,jdbcType=VARCHAR},
             #{item.amount,jdbcType=INTEGER}, #{item.price,jdbcType=DECIMAL}, #{item.remark,jdbcType=VARCHAR},
-            #{item.payment,jdbcType=DECIMAL}, #{item.paymentType,jdbcType=VARCHAR},
-            #{item.createTime,jdbcType=TIMESTAMP})
+            #{item.payment,jdbcType=DECIMAL}, #{item.paymentType,jdbcType=VARCHAR})
         </foreach>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.gyh.keepaccounts.model.Bill">

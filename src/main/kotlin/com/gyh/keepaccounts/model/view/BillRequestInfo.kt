@@ -14,36 +14,31 @@ import java.time.LocalDateTime
  * @apiParam {Integer} amount 数量
  * @apiParam {Decimal} price 价格
  * @apiParam {String} remark 备注
- * @apiParam {Decimal} payment 已付款金额
  * @apiParam {String} paymentType 付款类型 wx：微信；zfb：支付宝；rmb：现金；wzf：未支付
  * @apiParam {Date} [createTime] 注册日期
  */
-class BillRequestInfo(
+class BillRequestInfo {
     /**
      * 客户id
      */
-    var userId: Int? = null,
-    var billList: List<BillList> = listOf(),
+    var userId: Int? = null
+    var billList: List<BillList> = listOf()
+
     /**
      * 备注
      */
-    var remark: String? = null,
+    var remark: String? = null
 
     /**
-     * 1：已付款，0：未付款
+     * 付款类型 wx：微信；zfb：支付宝；rmb：现金；wzf：未支付
      */
-    var payment: BigDecimal? = null,
-
-    /**
-     * 付款类型 wx：微信；zfb：支付宝；rmb：现金
-     */
-    var paymentType: String? = null,
+    var paymentType: String? = null
 
     /**
      * 创建时间
      */
-    var createTime: LocalDateTime? = null,
-) {
+    var createTime: LocalDateTime? = null
+
     data class BillList(
         /**
          * 车型
@@ -66,12 +61,16 @@ class BillRequestInfo(
         var price: BigDecimal? = null,
     )
 
+    fun checkPaymentType(): Boolean {
+        return (paymentType == "wx" || paymentType == "zfb" || paymentType == "rmb" || paymentType == "wzf")
+    }
+
     fun createBill(): List<Bill> {
         return billList.map {
             Bill(
                 userId = userId,
                 remark = remark,
-                payment = payment,
+                payment = if (paymentType == "wzf") BigDecimal.ZERO else it.price,
                 paymentType = paymentType,
                 createTime = createTime,
                 type = it.type,

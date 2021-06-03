@@ -53,13 +53,9 @@ open class User(
     var logistics: String? = null,
 
     /**
-     * 照片
-     */
-    var photos: List<String> = listOf(),
-
-    /**
      * 图片地址，用空格分割
      */
+    @JsonIgnore
     var imgs: String? = null,
 
     /**
@@ -70,6 +66,7 @@ open class User(
     var createTime: LocalDateTime? = null
 ) : UserDetails {
 
+    @JsonIgnore
     override fun getAuthorities(): Collection<GrantedAuthority> {
         return listOf(role)
     }

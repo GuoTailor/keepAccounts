@@ -66,4 +66,8 @@ open class Bill(
      * 创建时间
      */
     var createTime: LocalDateTime? = null,
-)
+) {
+    fun checkPaymentType(): Boolean {
+        return (paymentType == "wx" || paymentType == "zfb" || paymentType == "rmb" || paymentType == "wzf")
+    }
+}

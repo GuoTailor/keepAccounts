@@ -18,10 +18,12 @@ class BillService {
     lateinit var billMapper: BillMapper
 
     fun createBill(bill: BillRequestInfo): Int {
+        if (!bill.checkPaymentType()) error("付款类型应为wx：微信；zfb：支付宝；rmb：现金；wzf：未支付")
         return billMapper.batchInsert(bill.createBill())
     }
 
     fun updateBill(bill: Bill): Int {
+        if (!bill.checkPaymentType()) error("付款类型应为wx：微信；zfb：支付宝；rmb：现金；wzf：未支付")
         return billMapper.updateByPrimaryKeySelective(bill)
     }
 

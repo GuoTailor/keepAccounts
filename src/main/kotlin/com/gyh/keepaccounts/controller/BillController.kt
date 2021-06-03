@@ -24,13 +24,16 @@ class BillController {
      * @apiName createBill
      * @apiVersion 0.0.1
      * @apiUse BillRequestInfo
+     * @apiParamExample {json} 请求示例:
+     * {"userId": 3,"billList": [{"type": "宝马","specification": "大","amount": 2,"price": 800000.01},{"type": "宝马",
+     * "specification": "大","amount": 3,"price": 800000.01}],"remark": "备注","paymentType": "wzf"}
      * @apiSuccessExample {json} 成功返回:
-     * {"code": 0,"msg": "成功","data": {}}
+     * {"code": 1,"msg": "成功","data": {}}
      * @apiGroup Bill
      * @apiPermission user
      */
     @PostMapping
-    fun createBill(bill: BillRequestInfo): ResponseInfo<Int> {
+    fun createBill(@RequestBody bill: BillRequestInfo): ResponseInfo<Int> {
         return ResponseInfo.ok(billService.createBill(bill))
     }
 
@@ -40,13 +43,15 @@ class BillController {
      * @apiName updateBill
      * @apiVersion 0.0.1
      * @apiUse Bill
+     * @apiParamExample {json} 请求示例:
+     * {"id": 3,"type": "宝马","specification": "小","paymentType": "wx","createTime": 1622691989000}
      * @apiSuccessExample {json} 成功返回:
-     * {"code": 0,"msg": "成功","data": {}}
+     * {"code": 1,"msg": "成功","data": {}}
      * @apiGroup Bill
      * @apiPermission user
      */
     @PutMapping
-    fun updateBill(bill: Bill): ResponseInfo<Int> {
+    fun updateBill(@RequestBody bill: Bill): ResponseInfo<Int> {
         return ResponseInfo.ok(billService.updateBill(bill))
     }
 
@@ -59,8 +64,13 @@ class BillController {
      * @apiParam {Integer} [size] 每页大小
      * @apiParam {Integer} [userId] 用户id，不传查询所有
      * @apiSuccessExample {json} 成功返回:
-     * {"code": 0,"msg": "成功","data": {}}
+     * {"code": 1,"msg": "成功","data": {"pageNum": 1,"pageSize": 30,"total": 2,"list": [{"username": "测试","debt": 3,
+     * "id": 3,"userId": 3,"type": "宝马","specification": "大","amount": 2,"price": 800000.01,"remark": "备注","payment"
+     * : 0.00,"paymentType": "wzf","createTime": 1622691796000},{"username": "测试","debt": 3,"id": 4,"userId": 3,"type"
+     * : "宝马","specification": "大","amount": 3,"price": 800000.01,"remark": "备注","payment": 0.00,"paymentType": "wzf"
+     * ,"createTime": 1622691796000}],"pages": 1}}
      * @apiUse BillResponseInfo
+     * @apiUse PageView
      * @apiGroup Bill
      * @apiPermission user
      */
@@ -80,7 +90,7 @@ class BillController {
      * @apiVersion 0.0.1
      * @apiParam {Integer} id 账单id
      * @apiSuccessExample {json} 成功返回:
-     * {"code": 0,"msg": "成功","data": {}}
+     * {"code": 1,"msg": "成功","data": {}}
      * @apiUse BillResponseInfo
      * @apiGroup Bill
      * @apiPermission user
@@ -97,7 +107,7 @@ class BillController {
      * @apiVersion 0.0.1
      * @apiParam {Integer} id 账单id
      * @apiSuccessExample {json} 成功返回:
-     * {"code": 0,"msg": "成功","data": {}}
+     * {"code": 1,"msg": "成功","data": {}}
      * @apiGroup Bill
      * @apiPermission user
      */

@@ -13,8 +13,8 @@ spring:
 logging:
   level:
     com:
-      ibms:
-        demo:
+      gyh:
+        keepaccounts:
           mapper: DEBUG
 
 mybatis:
