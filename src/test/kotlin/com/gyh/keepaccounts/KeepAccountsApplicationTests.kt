@@ -1,17 +1,24 @@
 package com.gyh.keepaccounts
 
+import com.gyh.keepaccounts.service.BillService
 import com.gyh.keepaccounts.service.OSSClient
+import com.gyh.keepaccounts.service.PurchaseService
+import com.gyh.keepaccounts.service.UserService
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
-//@SpringBootTest
+@SpringBootTest
 class KeepAccountsApplicationTests {
+    @Autowired
+    lateinit var billService: BillService
+
+    @Autowired
+    lateinit var userService: UserService
 
     @Test
     fun contextLoads() {
-        //OSSClient.deleteFile(1)
-        val list = listOf("12", "23", "45")
-        println(list.joinToString(separator = " ") { it })
+        println(userService.findConsume(1, 30, "price", "desc"))
     }
 
 

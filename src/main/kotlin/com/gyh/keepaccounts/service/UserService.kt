@@ -5,6 +5,7 @@ import com.gyh.keepaccounts.mapper.UserMapper
 import com.gyh.keepaccounts.model.PageView
 import com.gyh.keepaccounts.model.ResponseInfo
 import com.gyh.keepaccounts.model.User
+import com.gyh.keepaccounts.model.view.UserConsume
 import com.gyh.keepaccounts.model.view.UserResponseInfo
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,15 +39,23 @@ class UserService(val passwordEncoder: PasswordEncoder) : UserDetailsService {
         return fileService.loadFile(user)
     }
 
-    fun findUserByUsername(username: String): UserResponseInfo? {
-        val user = userMapper.findUserByUsername("%$username%")
-        val root = user?.imgs?.split(" ")
-        return user?.let { UserResponseInfo(it, root ?: listOf()) }
+    fun findUserByUsername(username: String): List<UserResponseInfo> {
+        val users = userMapper.findUserByUsername("%$username%")
+        return users.map { UserResponseInfo(it, it.imgs?.split(" ") ?: listOf()) }
     }
 
     fun getAllUser(page: Int, size: Int): PageView<UserResponseInfo> {
-        PageHelper.startPage<Any>(page, size)
+        PageHelper.startPage<UserResponseInfo>(page, size)
         return PageView.build(userMapper.findAll().map { fileService.loadFile(it) })
+    }
+
+    fun findConsume(page: Int, size: Int, field: String, order: String): List<UserConsume> {
+        val startPage = PageHelper.startPage<UserConsume>(page, size)
+        startPage.setOrderBy<UserConsume>("$field $order")
+        return userMapper.findConsume().map {
+            it.files = it.imgs?.split(" ") ?: listOf()
+            it
+        }
     }
 
     fun getById(id: Int) = fileService.loadFile(userMapper.selectByPrimaryKey(id) ?: error("用户：" + id + "不存在"))

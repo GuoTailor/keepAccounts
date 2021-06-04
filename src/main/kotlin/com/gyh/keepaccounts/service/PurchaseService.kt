@@ -29,6 +29,10 @@ class PurchaseService {
         return PageView.build(purchaseMapper.findAll())
     }
 
+    fun statistics(): Map<String, Any> {
+        return purchaseMapper.statistics()
+    }
+
     fun updatePurchase(purchase: Purchase): Int {
         if (purchase.paymentType != null && !purchase.checkPaymentType()) error("付款类型应为wx：微信；zfb：支付宝；rmb：现金；wzf：未支付")
         return purchaseMapper.updateByPrimaryKeySelective(purchase)

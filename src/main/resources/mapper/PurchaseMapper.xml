@@ -24,6 +24,10 @@
         <include refid="Base_Column_List"/>
         from ka_purchase
     </select>
+    <select id="statistics" resultType="map">
+        select (select sum(kp.money) from ka_purchase kp where kp.payment_type = 'wzf') as accountPaid,
+               (select sum(kp.money) from ka_purchase kp where kp.payment_type != 'wzf')  as arrearage
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete
         from ka_purchase

@@ -3,6 +3,7 @@ package com.gyh.keepaccounts.controller
 import com.gyh.keepaccounts.model.PageView
 import com.gyh.keepaccounts.model.ResponseInfo
 import com.gyh.keepaccounts.model.User
+import com.gyh.keepaccounts.model.view.UserConsume
 import com.gyh.keepaccounts.model.view.UserResponseInfo
 import com.gyh.keepaccounts.service.UserService
 import org.apache.coyote.RequestInfo
@@ -55,14 +56,46 @@ class UserController {
     }
 
     /**
+     * @api {get} /user/consume 统计消费记录
+     * @apiDescription 统计消费记录
+     * @apiName findConsume
+     * @apiVersion 0.0.1
+     * @apiParam {Integer} [page] 第几页(从一开始)
+     * @apiParam {Integer} [size] 每页大小
+     * @apiParam {String} field 排序字段支持 consume，create_time，
+     * @apiParam {String} order ASC:升序 DESC：降序
+     * @apiSuccessExample {json} 成功返回:
+     * {"code": 1,"msg": "成功","data": {"pageNum": 1,"pageSize": 30,"total": 4,"list": [{"username": "测试","debt": 3,
+     * "id": 4,"userId": 3,"type": "宝马","specification": "大","amount": 3,"price": 800000.01,"remark": "备注","payment":
+     * 0.00,"paymentType": "wzf","createTime": 1622691796000},{"username": "测试","debt": 3,"id": 6,"userId": 3,"type":
+     * "宝马","specification": "小","amount": 3,"price": 800000.01,"remark": "备注","payment": 10.00,"paymentType": "wzf",
+     * "createTime": 1622691989000},{"username": "测试","debt": 3,"id": 7,"userId": 3,"type": "宝马","specification": "小"
+     * ,"amount": 2,"price": 800000.01,"remark": "备注","payment": 0.00,"paymentType": "wzf","createTime": 1622692050000}
+     * ,{"username": "测试","debt": 3,"id": 8,"userId": 3,"type": "宝马","specification": "小","amount": 3,"price": 800000.01
+     * ,"remark": "备注","payment": 0.00,"paymentType": "wzf","createTime": 1622692050000}],"pages": 1}}
+     * @apiGroup Bill
+     * @apiUse BillResponseInfo
+     * @apiPermission user
+     */
+    @GetMapping("/consume")
+    fun findConsume(
+        @RequestParam(required = false) page: Int?,
+        @RequestParam(required = false) size: Int?,
+        @RequestParam field: String,
+        @RequestParam order: String
+    ): ResponseInfo<List<UserConsume>> {
+        return ResponseInfo.ok(userService.findConsume(page ?: 1, size ?: 30, field, order))
+    }
+
+    /**
      * @api {get} /user/username 根据客户名称查询用户
      * @apiDescription 根据客户名称查询用户
      * @apiName getByUsername
      * @apiVersion 0.0.1
      * @apiParam {String} username 客户名称
      * @apiSuccessExample {json} 成功返回:
-     * {"code": 1,"msg": "成功","data": {"files": ["keepaccounts/bd5de385-3696-457b-89f3-aaf420255a6c.jpg"],"id": 3,"username":
-     * "测试","location": "重庆","phone": "1234566","name": "张三","logistics": "物流","remark": "备注","createTime": 1622685018000}}
+     * {"code": 1,"msg": "成功","data": [{"files": ["keepaccounts/bd5de385-3696-457b-89f3-aaf420255a6c.jpg"],"id": 3,"username":
+     * "测试","location": "重庆","phone": "1234566","name": "张三","logistics": "物流","remark": "备注","createTime": 1622685018000}]}
      * @apiSuccess (返回) {Integer} id 用户id
      * @apiSuccess (返回) {String} username 用户名
      * @apiSuccess (返回) {String} password 密码
@@ -77,7 +110,7 @@ class UserController {
      * @apiPermission user
      */
     @GetMapping("/username")
-    fun getByUsername(@RequestParam username: String): ResponseInfo<UserResponseInfo?> {
+    fun getByUsername(@RequestParam username: String): ResponseInfo<List<UserResponseInfo>> {
         return ResponseInfo.ok(userService.findUserByUsername(username))
     }
 

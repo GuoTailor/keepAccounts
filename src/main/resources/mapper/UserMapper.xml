@@ -28,13 +28,20 @@
         from ka_user where username = #{username}
     </select>
     <select id="findAll" resultMap="BaseResultMap">
-        select * from ka_user
+        select *
+        from ka_user
     </select>
     <select id="findUserByUsername" parameterType="string" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from ka_user
         where username like #{username}
+    </select>
+    <select id="findConsume" resultType="com.gyh.keepaccounts.model.view.UserConsume">
+        select ku.*, sum(kb.price) as consume
+        from ka_user ku
+                 left join ka_bill kb on ku.id = kb.user_id
+        group by ku.id
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete

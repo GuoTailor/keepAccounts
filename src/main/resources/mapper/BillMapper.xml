@@ -44,6 +44,32 @@
         left join ka_user ku on ku.id = kb.user_id
         <if test="userId != null">where kb.user_id = #{userId,jdbcType=INTEGER}</if>
     </select>
+    <select id="countSalesVolume" parameterType="java.time.LocalDateTime" resultType="decimal">
+        select sum(kb.amount * kb.price)
+        from ka_bill kb
+        where create_time >= #{time}
+    </select>
+    <select id="countNonPayment" resultType="decimal">
+        select sum(kb.amount * kb.price - kb.payment)
+        from ka_bill kb
+        where kb.payment_type = 'wzf'
+    </select>
+    <select id="findDebt" resultMap="BillResponseMap">
+        select kb.id,
+               kb.user_id,
+               kb.`type`,
+               kb.specification,
+               kb.amount,
+               kb.price,
+               kb.remark,
+               kb.payment,
+               kb.payment_type,
+               kb.create_time,
+               ku.username
+        from ka_bill as kb
+                 left join ka_user ku on ku.id = kb.user_id
+        where kb.payment_type = 'wzf'
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete
         from ka_bill

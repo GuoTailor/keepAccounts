@@ -1,12 +1,17 @@
 package com.gyh.keepaccounts.service
 
 import com.github.pagehelper.PageHelper
+import com.gyh.keepaccounts.common.firstDay
+import com.gyh.keepaccounts.common.toLocalDateTime
 import com.gyh.keepaccounts.mapper.BillMapper
+import com.gyh.keepaccounts.mapper.PurchaseMapper
 import com.gyh.keepaccounts.model.Bill
 import com.gyh.keepaccounts.model.PageView
 import com.gyh.keepaccounts.model.view.BillRequestInfo
 import com.gyh.keepaccounts.model.view.BillResponseInfo
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
+import java.time.LocalTime
 import javax.annotation.Resource
 
 /**
@@ -16,6 +21,9 @@ import javax.annotation.Resource
 class BillService {
     @Resource
     lateinit var billMapper: BillMapper
+
+    @Resource
+    lateinit var purchaseMapper: PurchaseMapper
 
     fun createBill(bill: BillRequestInfo): Int {
         if (!bill.checkPaymentType()) error("付款类型应为wx：微信；zfb：支付宝；rmb：现金；wzf：未支付")
@@ -38,6 +46,24 @@ class BillService {
 
     fun deleteBill(id: Int): Int {
         return billMapper.deleteByPrimaryKey(id)
+    }
+
+    /**
+     * 统计销售额
+     */
+    fun countSalesVolume(): MutableMap<String, Any> {
+        val day = billMapper.countSalesVolume(LocalTime.MIN.toLocalDateTime()) ?: BigDecimal.ZERO
+        val month = billMapper.countSalesVolume(firstDay()) ?: BigDecimal.ZERO
+        val nonPayment = billMapper.countNonPayment() ?: BigDecimal.ZERO
+        val statistics = purchaseMapper.statistics()
+        statistics.putAll(mapOf("daySell" to day, "monthSell" to month, "nonPayment" to nonPayment))
+        return statistics
+    }
+
+    fun findDebt(page: Int, size: Int, field: String, order: String): PageView<BillResponseInfo> {
+        val startPage = PageHelper.startPage<BillResponseInfo>(page, size)
+        startPage.setOrderBy<BillResponseInfo>("$field $order")
+        return PageView.build(billMapper.findDebt())
     }
 
 }

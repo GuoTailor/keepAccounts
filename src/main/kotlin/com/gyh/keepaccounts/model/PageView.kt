@@ -41,4 +41,10 @@ class PageView<T>(pojo: List<T>) {
             BeanUtils.copyProperties(PageInfo(pojo), this)
         }
     }
+
+    override fun toString(): String {
+        return "PageView(pageNum=$pageNum, pageSize=$pageSize, total=$total, list=$list, pages=$pages)"
+    }
+
+
 }

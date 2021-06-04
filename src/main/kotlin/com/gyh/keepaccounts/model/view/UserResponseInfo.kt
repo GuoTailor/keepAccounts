@@ -17,7 +17,7 @@ import org.springframework.beans.BeanUtils
  * @apiSuccess (返回) {String} remark 备注
  * @apiSuccess (返回) {Date} createTime 注册日期
  */
-data class UserResponseInfo(val files: List<String>?): User() {
+open class UserResponseInfo(var files: List<String>?): User() {
     constructor(user: User, files: List<String>) : this(files) {
         BeanUtils.copyProperties(user, this)
     }

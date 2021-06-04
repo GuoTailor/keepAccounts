@@ -115,4 +115,56 @@ class BillController {
     fun deleteBill(id: Int): ResponseInfo<Int> {
         return ResponseInfo.ok(billService.deleteBill(id))
     }
+
+    /**
+     * @api {get} /bill/statistics 统计
+     * @apiDescription 统计
+     * @apiName countSalesVolume
+     * @apiVersion 0.0.1
+     * @apiSuccessExample {json} 成功返回:
+     * {"code": 1,"msg": "成功","data": {"accountPaid":1200.89, "monthSell":10400000.13, "nonPayment":8799990.11, "arrearage":120.89, "daySell":0}}
+     * @apiGroup Bill
+     * @apiSuccess (返回) {Decimal} accountPaid 未付款⾦额
+     * @apiSuccess (返回) {Decimal} arrearage 已付款⾦额
+     * @apiSuccess (返回) {Decimal} monthSell 月销售额
+     * @apiSuccess (返回) {Decimal} daySell 日销售额
+     * @apiSuccess (返回) {Decimal} nonPayment 未收款⾦额
+     * @apiPermission user
+     */
+    @GetMapping("/statistics")
+    fun countSalesVolume(): ResponseInfo<MutableMap<String, Any>> {
+        return ResponseInfo.ok(billService.countSalesVolume())
+    }
+
+    /**
+     * @api {get} /bill/debt 统计未收款记录
+     * @apiDescription 统计未收款记录
+     * @apiName findDebt
+     * @apiVersion 0.0.1
+     * @apiParam {Integer} [page] 第几页(从一开始)
+     * @apiParam {Integer} [size] 每页大小
+     * @apiParam {String} field 排序字段支持 price，create_time
+     * @apiParam {String} order ASC:升序 DESC：降序
+     * @apiSuccessExample {json} 成功返回:
+     * {"code": 1,"msg": "成功","data": {"pageNum": 1,"pageSize": 30,"total": 4,"list": [{"username": "测试","debt": 3,
+     * "id": 4,"userId": 3,"type": "宝马","specification": "大","amount": 3,"price": 800000.01,"remark": "备注","payment":
+     * 0.00,"paymentType": "wzf","createTime": 1622691796000},{"username": "测试","debt": 3,"id": 6,"userId": 3,"type":
+     * "宝马","specification": "小","amount": 3,"price": 800000.01,"remark": "备注","payment": 10.00,"paymentType": "wzf",
+     * "createTime": 1622691989000},{"username": "测试","debt": 3,"id": 7,"userId": 3,"type": "宝马","specification": "小"
+     * ,"amount": 2,"price": 800000.01,"remark": "备注","payment": 0.00,"paymentType": "wzf","createTime": 1622692050000}
+     * ,{"username": "测试","debt": 3,"id": 8,"userId": 3,"type": "宝马","specification": "小","amount": 3,"price": 800000.01
+     * ,"remark": "备注","payment": 0.00,"paymentType": "wzf","createTime": 1622692050000}],"pages": 1}}
+     * @apiGroup Bill
+     * @apiUse BillResponseInfo
+     * @apiPermission user
+     */
+    @GetMapping("/debt")
+    fun findDebt(
+        @RequestParam(required = false) page: Int?,
+        @RequestParam(required = false) size: Int?,
+        @RequestParam field: String,
+        @RequestParam order: String
+    ): ResponseInfo<PageView<BillResponseInfo>> {
+        return ResponseInfo.ok(billService.findDebt(page ?: 1, size ?: 30, field, order))
+    }
 }
