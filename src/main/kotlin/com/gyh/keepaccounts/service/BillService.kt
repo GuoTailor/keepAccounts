@@ -2,6 +2,7 @@ package com.gyh.keepaccounts.service
 
 import com.github.pagehelper.PageHelper
 import com.gyh.keepaccounts.common.firstDay
+import com.gyh.keepaccounts.common.lastDay
 import com.gyh.keepaccounts.common.toLocalDateTime
 import com.gyh.keepaccounts.mapper.BillMapper
 import com.gyh.keepaccounts.mapper.PurchaseMapper
@@ -56,14 +57,29 @@ class BillService {
         val month = billMapper.countSalesVolume(firstDay()) ?: BigDecimal.ZERO
         val nonPayment = billMapper.countNonPayment() ?: BigDecimal.ZERO
         val statistics = purchaseMapper.statistics()
+        statistics["accountPaid"] = statistics["accountPaid"] ?: BigDecimal.ZERO
+        statistics["arrearage"] = statistics["arrearage"] ?: BigDecimal.ZERO
         statistics.putAll(mapOf("daySell" to day, "monthSell" to month, "nonPayment" to nonPayment))
         return statistics
     }
 
+    /**
+     * 统计未收款记录
+     */
     fun findDebt(page: Int, size: Int, field: String, order: String): PageView<BillResponseInfo> {
         val startPage = PageHelper.startPage<BillResponseInfo>(page, size)
         startPage.setOrderBy<BillResponseInfo>("$field $order")
         return PageView.build(billMapper.findDebt())
+    }
+
+    fun findTodayBill(page: Int, size: Int): PageView<BillResponseInfo> {
+        PageHelper.startPage<BillResponseInfo>(page, size)
+        return PageView.build(billMapper.findBillByCreateTime(LocalTime.MIN.toLocalDateTime(), LocalTime.MAX.toLocalDateTime()))
+    }
+
+    fun findCurrentMonthBill(page: Int, size: Int): PageView<BillResponseInfo> {
+        PageHelper.startPage<BillResponseInfo>(page, size)
+        return PageView.build(billMapper.findBillByCreateTime(firstDay(), lastDay()))
     }
 
 }

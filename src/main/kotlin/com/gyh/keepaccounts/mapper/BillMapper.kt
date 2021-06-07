@@ -15,6 +15,7 @@ interface BillMapper {
     fun countSalesVolume(time: LocalDateTime): BigDecimal?
     fun countNonPayment(): BigDecimal?
     fun findDebt(): List<BillResponseInfo>
+    fun findBillByCreateTime(startTime: LocalDateTime, endTime: LocalDateTime): List<BillResponseInfo>
     fun updateByPrimaryKeySelective(record: Bill): Int
     fun updateByPrimaryKey(record: Bill): Int
 }

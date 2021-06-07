@@ -167,4 +167,56 @@ class BillController {
     ): ResponseInfo<PageView<BillResponseInfo>> {
         return ResponseInfo.ok(billService.findDebt(page ?: 1, size ?: 30, field, order))
     }
+
+    /**
+     * @api {get} /bill/day 查询今天销售记录
+     * @apiDescription 查询今天销售记录
+     * @apiName findTodayBill
+     * @apiVersion 0.0.1
+     * @apiParam {Integer} [page] 第几页(从一开始)
+     * @apiParam {Integer} [size] 每页大小
+     * @apiSuccessExample {json} 成功返回:
+     * {"code": 1,"msg": "成功","data": {"pageNum": 1,"pageSize": 30,"total": 4,"list": [{"username": "测试","debt": 3,
+     * "id": 4,"userId": 3,"type": "宝马","specification": "大","amount": 3,"price": 800000.01,"remark": "备注","payment":
+     * 0.00,"paymentType": "wzf","createTime": 1622691796000},{"username": "测试","debt": 3,"id": 6,"userId": 3,"type":
+     * "宝马","specification": "小","amount": 3,"price": 800000.01,"remark": "备注","payment": 10.00,"paymentType": "wzf",
+     * "createTime": 1622691989000},{"username": "测试","debt": 3,"id": 7,"userId": 3,"type": "宝马","specification": "小"
+     * ,"amount": 2,"price": 800000.01,"remark": "备注","payment": 0.00,"paymentType": "wzf","createTime": 1622692050000}
+     * ,{"username": "测试","debt": 3,"id": 8,"userId": 3,"type": "宝马","specification": "小","amount": 3,"price": 800000.01
+     * ,"remark": "备注","payment": 0.00,"paymentType": "wzf","createTime": 1622692050000}],"pages": 1}}
+     * @apiGroup Bill
+     * @apiUse BillResponseInfo
+     * @apiPermission user
+     */
+    @GetMapping("/day")
+    fun findTodayBill(@RequestParam(required = false) page: Int?,
+                      @RequestParam(required = false) size: Int?,): ResponseInfo<PageView<BillResponseInfo>> {
+        return ResponseInfo.ok(billService.findTodayBill(page ?: 1, size ?: 30))
+    }
+
+    /**
+     * @api {get} /bill/month 查询本月销售记录
+     * @apiDescription 查询本月销售记录
+     * @apiName findCurrentMonthBill
+     * @apiVersion 0.0.1
+     * @apiParam {Integer} [page] 第几页(从一开始)
+     * @apiParam {Integer} [size] 每页大小
+     * @apiSuccessExample {json} 成功返回:
+     * {"code": 1,"msg": "成功","data": {"pageNum": 1,"pageSize": 30,"total": 4,"list": [{"username": "测试","debt": 3,
+     * "id": 4,"userId": 3,"type": "宝马","specification": "大","amount": 3,"price": 800000.01,"remark": "备注","payment":
+     * 0.00,"paymentType": "wzf","createTime": 1622691796000},{"username": "测试","debt": 3,"id": 6,"userId": 3,"type":
+     * "宝马","specification": "小","amount": 3,"price": 800000.01,"remark": "备注","payment": 10.00,"paymentType": "wzf",
+     * "createTime": 1622691989000},{"username": "测试","debt": 3,"id": 7,"userId": 3,"type": "宝马","specification": "小"
+     * ,"amount": 2,"price": 800000.01,"remark": "备注","payment": 0.00,"paymentType": "wzf","createTime": 1622692050000}
+     * ,{"username": "测试","debt": 3,"id": 8,"userId": 3,"type": "宝马","specification": "小","amount": 3,"price": 800000.01
+     * ,"remark": "备注","payment": 0.00,"paymentType": "wzf","createTime": 1622692050000}],"pages": 1}}
+     * @apiGroup Bill
+     * @apiUse BillResponseInfo
+     * @apiPermission user
+     */
+    @GetMapping("/month")
+    fun findCurrentMonthBill(@RequestParam(required = false) page: Int?,
+                      @RequestParam(required = false) size: Int?,): ResponseInfo<PageView<BillResponseInfo>> {
+        return ResponseInfo.ok(billService.findCurrentMonthBill(page ?: 1, size ?: 30))
+    }
 }

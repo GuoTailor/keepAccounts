@@ -70,6 +70,22 @@
                  left join ka_user ku on ku.id = kb.user_id
         where kb.payment_type = 'wzf'
     </select>
+    <select id="findBillByCreateTime" resultMap="BillResponseMap">
+        select kb.id,
+               kb.user_id,
+               kb.`type`,
+               kb.specification,
+               kb.amount,
+               kb.price,
+               kb.remark,
+               kb.payment,
+               kb.payment_type,
+               kb.create_time,
+               ku.username
+        from ka_bill as kb
+                 left join ka_user ku on ku.id = kb.user_id
+        where kb.create_time between #{startTime} and #{endTime}
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete
         from ka_bill

@@ -12,8 +12,8 @@ object OSSClient {
     private const val endpoint = "https://oss-cn-shenzhen.aliyuncs.com"
     private const val bucket = "repair-h"
     private const val baseUrl = "https://repair-h.oss-cn-shenzhen.aliyuncs.com"
-    private const val accessKeyId = "*"
-    private const val accessKeySecret = "*"
+    private const val accessKeyId = "LTAI4FtrpqjpGkoJ9qAMEMK5"
+    private const val accessKeySecret = "KX4JAkRXJWv8kFDtgvkPrAxb3IdL2n"
     const val path = "keepaccounts/"
 
     // 创建OSSClient实例。

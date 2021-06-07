@@ -73,7 +73,7 @@ class UserController {
      * ,"amount": 2,"price": 800000.01,"remark": "备注","payment": 0.00,"paymentType": "wzf","createTime": 1622692050000}
      * ,{"username": "测试","debt": 3,"id": 8,"userId": 3,"type": "宝马","specification": "小","amount": 3,"price": 800000.01
      * ,"remark": "备注","payment": 0.00,"paymentType": "wzf","createTime": 1622692050000}],"pages": 1}}
-     * @apiGroup Bill
+     * @apiGroup User
      * @apiUse BillResponseInfo
      * @apiPermission user
      */
@@ -115,7 +115,7 @@ class UserController {
     }
 
     /**
-     * @api {get} /user/username 根据id查询用户
+     * @api {get} /user/id 根据id查询用户
      * @apiDescription 根据id查询用户
      * @apiName getById
      * @apiVersion 0.0.1

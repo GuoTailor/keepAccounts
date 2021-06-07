@@ -18,7 +18,7 @@ class KeepAccountsApplicationTests {
 
     @Test
     fun contextLoads() {
-        println(userService.findConsume(1, 30, "price", "desc"))
+        println(userService.findConsume(1, 30, "consume", "asc"))
     }
 
 
