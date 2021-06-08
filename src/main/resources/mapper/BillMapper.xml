@@ -131,12 +131,12 @@
         insert into ka_bill
         (user_id, `type`, specification,
         amount, price, remark,
-        payment, payment_type)
+        payment, payment_type, create_time)
         values
         <foreach collection="list" item="item" separator=",">
             (#{item.userId,jdbcType=INTEGER}, #{item.type,jdbcType=VARCHAR}, #{item.specification,jdbcType=VARCHAR},
             #{item.amount,jdbcType=INTEGER}, #{item.price,jdbcType=DECIMAL}, #{item.remark,jdbcType=VARCHAR},
-            #{item.payment,jdbcType=DECIMAL}, #{item.paymentType,jdbcType=VARCHAR})
+            #{item.payment,jdbcType=DECIMAL}, #{item.paymentType,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP})
         </foreach>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.gyh.keepaccounts.model.Bill">

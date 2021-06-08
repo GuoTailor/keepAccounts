@@ -72,7 +72,7 @@ class BillRequestInfo {
                 remark = remark,
                 payment = if (paymentType == "wzf") BigDecimal.ZERO else it.price,
                 paymentType = paymentType,
-                createTime = createTime,
+                createTime = createTime ?: LocalDateTime.now(),
                 type = it.type,
                 specification = it.specification,
                 amount = it.amount,

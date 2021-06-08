@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
-@SpringBootTest
+//@SpringBootTest
 class KeepAccountsApplicationTests {
     @Autowired
     lateinit var billService: BillService
@@ -17,6 +17,17 @@ class KeepAccountsApplicationTests {
     @Test
     fun contextLoads() {
         println(userService.findConsume(1, 30, "consume", "asc"))
+    }
+
+    @Test
+    fun nmak() {
+        val s = ""
+        val split = s.split(" ")
+        println(split)
+        println(split.size)
+        println(split.isEmpty())
+        split.forEach { println(it) }
+        println(s.isNotBlank())
     }
 
 
