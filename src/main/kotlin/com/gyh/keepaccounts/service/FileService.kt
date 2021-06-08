@@ -2,6 +2,7 @@ package com.gyh.keepaccounts.service
 
 import com.gyh.keepaccounts.model.User
 import com.gyh.keepaccounts.model.view.UserResponseInfo
+import com.qcloud.cos.model.ObjectMetadata
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
@@ -23,7 +24,7 @@ class FileService {
             if (it.lastIndex > 0) "." + it[it.lastIndex] else null
         }
         val fileName = UUID.randomUUID().toString() + (suffix ?: "")
-        return OSSClient.updateFile(fileName, file.inputStream)
+        return COSClient.updateFile(fileName, file.inputStream, file.size)
     }
 
     fun loadFile(user: User): UserResponseInfo {
@@ -32,10 +33,10 @@ class FileService {
 
     }
 
-    fun deleteFile(path: String): Boolean = OSSClient.deleteFile(path)
+    fun deleteFile(path: String) = COSClient.deleteFile(path)
 
     fun deleteAll(files: String) {
         val objectNames = files.split(" ")
-        return OSSClient.deleteFile(objectNames)
+        return COSClient.deleteFile(objectNames)
     }
 }
