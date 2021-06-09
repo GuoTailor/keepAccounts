@@ -53,8 +53,8 @@ class BillService {
      * 统计销售额
      */
     fun countSalesVolume(): MutableMap<String, Any> {
-        val day = billMapper.countSalesVolume(LocalTime.MIN.toLocalDateTime()) ?: BigDecimal.ZERO
-        val month = billMapper.countSalesVolume(firstDay()) ?: BigDecimal.ZERO
+        val day = billMapper.countSalesVolume(LocalTime.MIN.toLocalDateTime(), LocalTime.MAX.toLocalDateTime()) ?: BigDecimal.ZERO
+        val month = billMapper.countSalesVolume(firstDay(), lastDay()) ?: BigDecimal.ZERO
         val nonPayment = billMapper.countNonPayment() ?: BigDecimal.ZERO
         val statistics = purchaseMapper.statistics()
         statistics["accountPaid"] = statistics["accountPaid"] ?: BigDecimal.ZERO
@@ -82,4 +82,26 @@ class BillService {
         return PageView.build(billMapper.findBillByCreateTime(firstDay(), lastDay()))
     }
 
+    /**
+     * 统计用户的总消费和总欠款
+     */
+    fun countConsume(userId: Int): MutableMap<String, BigDecimal> {
+        return billMapper.countConsume(userId)
+    }
+
+    /**
+     * 获取用户的账单
+     */
+    fun findDetail(page: Int, size: Int, userId: Int, isDebt: Boolean): PageView<BillResponseInfo> {
+        PageHelper.startPage<BillResponseInfo>(page, size)
+        return PageView.build(billMapper.findDetail(userId, if (isDebt) "=" else "!=" ))
+    }
+
+    /**
+     * 批量更新已付款
+     */
+    fun batchUpdatePayment(ids: List<Int>, paymentType: String): Int {
+        if (paymentType == "wzf") error("不能批量修改为未支付")
+        return billMapper.batchUpdatePayment(ids, paymentType)
+    }
 }

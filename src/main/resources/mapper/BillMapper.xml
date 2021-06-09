@@ -47,7 +47,7 @@
     <select id="countSalesVolume" parameterType="java.time.LocalDateTime" resultType="decimal">
         select sum(kb.amount * kb.price)
         from ka_bill kb
-        where create_time >= #{time}
+        where create_time between #{startTime} and #{endTime}
     </select>
     <select id="countNonPayment" resultType="decimal">
         select sum(kb.amount * kb.price - kb.payment)
@@ -85,6 +85,28 @@
         from ka_bill as kb
                  left join ka_user ku on ku.id = kb.user_id
         where kb.create_time between #{startTime} and #{endTime}
+    </select>
+    <select id="countConsume" parameterType="int" resultType="map">
+        select sum(price * amount) as consume, sum(price * amount - ka_bill.payment) as debt
+        from ka_bill
+        where user_id = #{userId}
+    </select>
+    <select id="findDetail" resultMap="BillResponseMap">
+        select kb.id,
+               kb.user_id,
+               kb.`type`,
+               kb.specification,
+               kb.amount,
+               kb.price,
+               kb.remark,
+               kb.payment,
+               kb.payment_type,
+               kb.create_time,
+               ku.username
+        from ka_bill as kb
+                 left join ka_user ku on ku.id = kb.user_id
+        where kb.user_id = #{userId}
+          and kb.payment_type ${isDebt} "wzf"
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete
@@ -136,7 +158,8 @@
         <foreach collection="list" item="item" separator=",">
             (#{item.userId,jdbcType=INTEGER}, #{item.type,jdbcType=VARCHAR}, #{item.specification,jdbcType=VARCHAR},
             #{item.amount,jdbcType=INTEGER}, #{item.price,jdbcType=DECIMAL}, #{item.remark,jdbcType=VARCHAR},
-            #{item.payment,jdbcType=DECIMAL}, #{item.paymentType,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP})
+            #{item.payment,jdbcType=DECIMAL}, #{item.paymentType,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=TIMESTAMP})
         </foreach>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.gyh.keepaccounts.model.Bill">
@@ -166,5 +189,11 @@
             payment_type  = #{paymentType,jdbcType=VARCHAR},
             create_time   = #{createTime,jdbcType=TIMESTAMP}
         where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="batchUpdatePayment" parameterType="list">
+        update ka_bill
+        set payment      = price * amount,
+            payment_type = #{paymentType}
+        where id in #{ids}
     </update>
 </mapper>

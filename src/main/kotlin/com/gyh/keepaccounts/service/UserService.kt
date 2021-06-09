@@ -79,7 +79,7 @@ class UserService(val passwordEncoder: PasswordEncoder) : UserDetailsService {
      * 更新用户
      */
     fun update(user: UserResponseInfo): Int {
-        user.imgs = user.files?.joinToString(separator = " ") { it }
+        user.imgs = user.files?.joinToString(separator = " ") { it }?.trim()
         user.password?.let { user.password = passwordEncoder.encode(it) }
         return userMapper.updateByPrimaryKeySelective(user)
     }

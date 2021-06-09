@@ -3,11 +3,13 @@ package com.gyh.keepaccounts.controller
 import com.gyh.keepaccounts.model.Bill
 import com.gyh.keepaccounts.model.PageView
 import com.gyh.keepaccounts.model.ResponseInfo
+import com.gyh.keepaccounts.model.view.BillIdListRequestInfo
 import com.gyh.keepaccounts.model.view.BillRequestInfo
 import com.gyh.keepaccounts.model.view.BillResponseInfo
 import com.gyh.keepaccounts.service.BillService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
+import java.math.BigDecimal
 
 /**
  * Created by gyh on 2021/6/1
@@ -189,8 +191,10 @@ class BillController {
      * @apiPermission user
      */
     @GetMapping("/day")
-    fun findTodayBill(@RequestParam(required = false) page: Int?,
-                      @RequestParam(required = false) size: Int?,): ResponseInfo<PageView<BillResponseInfo>> {
+    fun findTodayBill(
+        @RequestParam(required = false) page: Int?,
+        @RequestParam(required = false) size: Int?,
+    ): ResponseInfo<PageView<BillResponseInfo>> {
         return ResponseInfo.ok(billService.findTodayBill(page ?: 1, size ?: 30))
     }
 
@@ -215,8 +219,71 @@ class BillController {
      * @apiPermission user
      */
     @GetMapping("/month")
-    fun findCurrentMonthBill(@RequestParam(required = false) page: Int?,
-                      @RequestParam(required = false) size: Int?,): ResponseInfo<PageView<BillResponseInfo>> {
+    fun findCurrentMonthBill(
+        @RequestParam(required = false) page: Int?,
+        @RequestParam(required = false) size: Int?,
+    ): ResponseInfo<PageView<BillResponseInfo>> {
         return ResponseInfo.ok(billService.findCurrentMonthBill(page ?: 1, size ?: 30))
+    }
+
+    /**
+     * @api {get} /bill/count 统计用户的总消费和总欠款
+     * @apiDescription 统计用户的总消费和总欠款
+     * @apiName countConsume
+     * @apiVersion 0.0.1
+     * @apiParam {Integer} userId 用户id
+     * @apiSuccessExample {json} 成功返回:
+     * {"code": 1,"msg": "成功","data": {}}
+     * @apiSuccess (返回) {Decimal} consume 总消费
+     * @apiSuccess (返回) {Decimal} debt 总欠款
+     * @apiGroup Bill
+     * @apiPermission user
+     */
+    @GetMapping("/count")
+    fun countConsume(@RequestParam userId: Int): ResponseInfo<MutableMap<String, BigDecimal>> {
+        return ResponseInfo.ok(billService.countConsume(userId))
+    }
+
+    /**
+     * @api {get} /bill/detail 获取欠款/结款明显
+     * @apiDescription 获取欠款/结款明显
+     * @apiName findDetail
+     * @apiVersion 0.0.1
+     * @apiParam {Integer} [page] 第几页(从一开始)
+     * @apiParam {Integer} [size] 每页大小
+     * @apiParam {Integer} userId 用户id
+     * @apiParam {Boolean} isDebt 是否是查询欠款详情true：查询欠款明显；false：查询已结款明显
+     * @apiSuccessExample {json} 成功返回:
+     * {"code": 1,"msg": "成功","data": {}}
+     * @apiGroup Bill
+     * @apiUse BillResponseInfo
+     * @apiPermission user
+     */
+    @GetMapping("/detail")
+    fun findDetail(
+        @RequestParam(required = false) page: Int?,
+        @RequestParam(required = false) size: Int?,
+        @RequestParam userId: Int, @RequestParam isDebt: Boolean
+    ): ResponseInfo<PageView<BillResponseInfo>> {
+        return ResponseInfo.ok(billService.findDetail(page ?: 1, size ?: 30, userId, isDebt))
+    }
+
+    /**
+     * @api {get} /bill/payment 批量修改订单的付款类型
+     * @apiDescription 批量修改订单的付款类型
+     * @apiName batchUpdatePayment
+     * @apiVersion 0.0.1
+     * @apiParam {List} ids id列表集合
+     * @apiParam {String} paymentType 付款类型 wx：微信；zfb：支付宝；rmb：现金
+     * @apiParamExample {json} 请求示例:
+     * {"ids": [1, 2, 3],"paymentType": "zfb"}
+     * @apiSuccessExample {json} 成功返回:
+     * {"code": 1,"msg": "成功","data": {}}
+     * @apiGroup Bill
+     * @apiPermission user
+     */
+    @PutMapping("/payment")
+    fun batchUpdatePayment(@RequestBody info: BillIdListRequestInfo): ResponseInfo<Int> {
+        return ResponseInfo.ok(billService.batchUpdatePayment(info.ids, info.paymentType))
     }
 }

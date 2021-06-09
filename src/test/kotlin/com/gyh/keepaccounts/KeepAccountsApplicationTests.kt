@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
-//@SpringBootTest
+@SpringBootTest
 class KeepAccountsApplicationTests {
     @Autowired
     lateinit var billService: BillService
@@ -16,7 +16,7 @@ class KeepAccountsApplicationTests {
 
     @Test
     fun contextLoads() {
-        println(userService.findConsume(1, 30, "consume", "asc"))
+        println(billService.findDetail(1, 30, 3, false))
     }
 
     @Test

@@ -29,7 +29,6 @@ class FileService {
     fun loadFile(user: User): UserResponseInfo {
         val root = user.imgs?.split(" ")
         return UserResponseInfo(user, root ?: listOf())
-
     }
 
     fun deleteFile(path: String) = COSClient.deleteFile(path)
