@@ -1,5 +1,6 @@
 package com.gyh.keepaccounts.controller
 
+import com.gyh.keepaccounts.common.toLocalDateTime
 import com.gyh.keepaccounts.model.Bill
 import com.gyh.keepaccounts.model.PageView
 import com.gyh.keepaccounts.model.ResponseInfo
@@ -10,6 +11,7 @@ import com.gyh.keepaccounts.service.BillService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import java.math.BigDecimal
+import java.time.LocalDateTime
 
 /**
  * Created by gyh on 2021/6/1
@@ -245,14 +247,16 @@ class BillController {
     }
 
     /**
-     * @api {get} /bill/detail 获取欠款/结款明显
-     * @apiDescription 获取欠款/结款明显
+     * @api {get} /bill/detail 获取欠款/结款明细
+     * @apiDescription 获取欠款/结款明细
      * @apiName findDetail
      * @apiVersion 0.0.1
      * @apiParam {Integer} [page] 第几页(从一开始)
      * @apiParam {Integer} [size] 每页大小
      * @apiParam {Integer} userId 用户id
      * @apiParam {Boolean} isDebt 是否是查询欠款详情true：查询欠款明显；false：查询已结款明显
+     * @apiParam {Date} [startTime] 开始日期 1622691796000
+     * @apiParam {Date} [endTime] 结束日期 1622691796000
      * @apiSuccessExample {json} 成功返回:
      * {"code": 1,"msg": "成功","data": {}}
      * @apiGroup Bill
@@ -263,9 +267,21 @@ class BillController {
     fun findDetail(
         @RequestParam(required = false) page: Int?,
         @RequestParam(required = false) size: Int?,
-        @RequestParam userId: Int, @RequestParam isDebt: Boolean
+        @RequestParam userId: Int,
+        @RequestParam isDebt: Boolean,
+        @RequestParam(required = false) startTime: Long?,
+        @RequestParam(required = false) endTime: Long?
     ): ResponseInfo<PageView<BillResponseInfo>> {
-        return ResponseInfo.ok(billService.findDetail(page ?: 1, size ?: 30, userId, isDebt))
+        return ResponseInfo.ok(
+            billService.findDetailByCreateTime(
+                page ?: 1,
+                size ?: 30,
+                userId,
+                isDebt,
+                startTime?.toLocalDateTime(),
+                endTime?.toLocalDateTime()
+            )
+        )
     }
 
     /**

@@ -65,14 +65,20 @@ class UserController {
      * @apiParam {String} field 排序字段支持 consume，create_time，
      * @apiParam {String} order ASC:升序 DESC：降序
      * @apiSuccessExample {json} 成功返回:
-     * {"code": 1,"msg": "成功","data": {"pageNum": 1,"pageSize": 30,"total": 4,"list": [{"username": "测试","debt": 3,
-     * "id": 4,"userId": 3,"type": "宝马","specification": "大","amount": 3,"price": 800000.01,"remark": "备注","payment":
-     * 0.00,"paymentType": "wzf","createTime": 1622691796000},{"username": "测试","debt": 3,"id": 6,"userId": 3,"type":
-     * "宝马","specification": "小","amount": 3,"price": 800000.01,"remark": "备注","payment": 10.00,"paymentType": "wzf",
-     * "createTime": 1622691989000},{"username": "测试","debt": 3,"id": 7,"userId": 3,"type": "宝马","specification": "小"
-     * ,"amount": 2,"price": 800000.01,"remark": "备注","payment": 0.00,"paymentType": "wzf","createTime": 1622692050000}
-     * ,{"username": "测试","debt": 3,"id": 8,"userId": 3,"type": "宝马","specification": "小","amount": 3,"price": 800000.01
-     * ,"remark": "备注","payment": 0.00,"paymentType": "wzf","createTime": 1622692050000}],"pages": 1}}
+     * {"code": 1,"msg": "成功","data": [{"consume": null,"id": 2,"username": "cheshi","location": "重庆","phone":
+     * "1234566","name": "张三","logistics": "物流","remark": "备注","createTime": null,"files": []},{"consume": 208.00,
+     * "id": 1,"username": "admin","location": null,"phone": null,"name": null,"logistics": null,"remark": null,
+     * "createTime": null,"files": []},{"consume": 208.00,"id": 6,"username": "李李","location": "123","phone": "",
+     * "name": "123","logistics": "","remark": "","createTime": null,"files": ["","keepaccounts/1755a64d-2d5a-4854-9c61-771446a28bc1.jpg"]}
+     * ,{"consume": 208.00,"id": 11,"username": "添加客户","location": "1","phone": "1","name": "客户名称","logistics": ""
+     * ,"remark": "","createTime": null,"files": [""]},{"consume": 220.00,"id": 12,"username": "李三","location": "",
+     * "phone": "","name": "李三","logistics": "","remark": "","createTime": null,"files": [""]},{"consume": 316.00,"id"
+     * : 13,"username": "三麻子","location": "","phone": "","name": "三麻子","logistics": "","remark": "","createTime":
+     * null,"files": [""]},{"consume": 431.50,"id": 4,"username": "小三","location": "北京","phone": "1999405","name":
+     * "小三","logistics": "8我屋","remark": "备注","createTime": null,"files": [""]},{"consume": 812.00,"id": 10,"username"
+     * : "重庆机电科技有限公司","location": "重庆市沙坪坝区大学城中路","phone": "1582343433","name": "张三6","logistics": "安顺",
+     * "remark": "备注内容","createTime": null,"files": [""]},{"consume": 1262.50,"id": 9,"username": "河北科技2","location":
+     * "河北保定市","phone": "134632","name": "张三3","logistics": "安顺","remark": "备注撒","createTime": null,"files": [""]}]}
      * @apiGroup User
      * @apiUse BillResponseInfo
      * @apiPermission user

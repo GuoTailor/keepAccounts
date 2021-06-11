@@ -1,6 +1,7 @@
 package com.gyh.keepaccounts.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.time.LocalDateTime
@@ -71,7 +72,7 @@ open class User(
         return listOf(role)
     }
 
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     override fun getPassword(): String? {
         return password
     }

@@ -107,6 +107,7 @@
                  left join ka_user ku on ku.id = kb.user_id
         where kb.user_id = #{userId}
           and kb.payment_type ${isDebt} "wzf"
+        <if test="startTime != null and endTime != null">and create_time between #{startTime} and #{endTime}</if>
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete

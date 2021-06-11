@@ -12,7 +12,9 @@ import com.gyh.keepaccounts.model.view.BillRequestInfo
 import com.gyh.keepaccounts.model.view.BillResponseInfo
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.time.LocalDateTime
 import java.time.LocalTime
+import java.util.stream.Stream
 import javax.annotation.Resource
 
 /**
@@ -53,7 +55,8 @@ class BillService {
      * 统计销售额
      */
     fun countSalesVolume(): MutableMap<String, Any> {
-        val day = billMapper.countSalesVolume(LocalTime.MIN.toLocalDateTime(), LocalTime.MAX.toLocalDateTime()) ?: BigDecimal.ZERO
+        val day = billMapper.countSalesVolume(LocalTime.MIN.toLocalDateTime(), LocalTime.MAX.toLocalDateTime())
+            ?: BigDecimal.ZERO
         val month = billMapper.countSalesVolume(firstDay(), lastDay()) ?: BigDecimal.ZERO
         val nonPayment = billMapper.countNonPayment() ?: BigDecimal.ZERO
         val statistics = purchaseMapper.statistics()
@@ -74,7 +77,12 @@ class BillService {
 
     fun findTodayBill(page: Int, size: Int): PageView<BillResponseInfo> {
         PageHelper.startPage<BillResponseInfo>(page, size)
-        return PageView.build(billMapper.findBillByCreateTime(LocalTime.MIN.toLocalDateTime(), LocalTime.MAX.toLocalDateTime()))
+        return PageView.build(
+            billMapper.findBillByCreateTime(
+                LocalTime.MIN.toLocalDateTime(),
+                LocalTime.MAX.toLocalDateTime()
+            )
+        )
     }
 
     fun findCurrentMonthBill(page: Int, size: Int): PageView<BillResponseInfo> {
@@ -92,9 +100,16 @@ class BillService {
     /**
      * 获取用户的账单
      */
-    fun findDetail(page: Int, size: Int, userId: Int, isDebt: Boolean): PageView<BillResponseInfo> {
+    fun findDetailByCreateTime(
+        page: Int,
+        size: Int,
+        userId: Int,
+        isDebt: Boolean,
+        startTime: LocalDateTime? = null,
+        endTime: LocalDateTime? = null
+    ): PageView<BillResponseInfo> {
         PageHelper.startPage<BillResponseInfo>(page, size)
-        return PageView.build(billMapper.findDetail(userId, if (isDebt) "=" else "!=" ))
+        return PageView.build(billMapper.findDetail(userId, if (isDebt) "=" else "!=", startTime, endTime))
     }
 
     /**

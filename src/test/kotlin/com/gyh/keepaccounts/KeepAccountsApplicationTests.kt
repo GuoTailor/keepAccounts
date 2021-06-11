@@ -1,10 +1,12 @@
 package com.gyh.keepaccounts
 
+import com.gyh.keepaccounts.common.firstDay
 import com.gyh.keepaccounts.service.BillService
 import com.gyh.keepaccounts.service.UserService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import java.time.LocalDateTime
 
 @SpringBootTest
 class KeepAccountsApplicationTests {
@@ -16,7 +18,6 @@ class KeepAccountsApplicationTests {
 
     @Test
     fun contextLoads() {
-        println(billService.findDetail(1, 30, 3, false))
     }
 
     @Test
