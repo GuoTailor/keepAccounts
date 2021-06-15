@@ -285,7 +285,7 @@ class BillController {
     }
 
     /**
-     * @api {get} /bill/payment 批量修改订单的付款类型
+     * @api {put} /bill/payment 批量修改订单的付款类型
      * @apiDescription 批量修改订单的付款类型
      * @apiName batchUpdatePayment
      * @apiVersion 0.0.1

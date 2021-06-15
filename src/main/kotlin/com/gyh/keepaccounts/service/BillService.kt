@@ -35,6 +35,9 @@ class BillService {
 
     fun updateBill(bill: Bill): Int {
         if (!bill.checkPaymentType()) error("付款类型应为wx：微信；zfb：支付宝；rmb：现金；wzf：未支付")
+        bill.payment =
+            if (bill.paymentType == "wzf") BigDecimal.ZERO
+            else (bill.price?.multiply(BigDecimal(bill.amount ?: 0)))
         return billMapper.updateByPrimaryKeySelective(bill)
     }
 

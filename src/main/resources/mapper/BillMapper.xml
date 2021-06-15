@@ -43,6 +43,7 @@
         from ka_bill as kb
         left join ka_user ku on ku.id = kb.user_id
         <if test="userId != null">where kb.user_id = #{userId,jdbcType=INTEGER}</if>
+        order by kb.create_time DESC
     </select>
     <select id="countSalesVolume" parameterType="java.time.LocalDateTime" resultType="decimal">
         select sum(kb.amount * kb.price)
@@ -93,21 +94,21 @@
     </select>
     <select id="findDetail" resultMap="BillResponseMap">
         select kb.id,
-               kb.user_id,
-               kb.`type`,
-               kb.specification,
-               kb.amount,
-               kb.price,
-               kb.remark,
-               kb.payment,
-               kb.payment_type,
-               kb.create_time,
-               ku.username
+        kb.user_id,
+        kb.`type`,
+        kb.specification,
+        kb.amount,
+        kb.price,
+        kb.remark,
+        kb.payment,
+        kb.payment_type,
+        kb.create_time,
+        ku.username
         from ka_bill as kb
-                 left join ka_user ku on ku.id = kb.user_id
+        left join ka_user ku on ku.id = kb.user_id
         where kb.user_id = #{userId}
-          and kb.payment_type ${isDebt} "wzf"
-        <if test="startTime != null and endTime != null">and create_time between #{startTime} and #{endTime}</if>
+        and kb.payment_type ${isDebt} 'wzf'
+        <if test="startTime != null and endTime != null">and kb.create_time between #{startTime} and #{endTime}</if>
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete
@@ -191,10 +192,13 @@
             create_time   = #{createTime,jdbcType=TIMESTAMP}
         where id = #{id,jdbcType=INTEGER}
     </update>
-    <update id="batchUpdatePayment" parameterType="list">
+    <update id="batchUpdatePayment">
         update ka_bill
-        set payment      = price * amount,
-            payment_type = #{paymentType}
-        where id in #{ids}
+        set payment = price * amount,
+        payment_type = #{paymentType}
+        where id in
+        <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
     </update>
 </mapper>
