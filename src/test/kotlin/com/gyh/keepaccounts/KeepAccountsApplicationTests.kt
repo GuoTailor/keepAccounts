@@ -2,6 +2,7 @@ package com.gyh.keepaccounts
 
 import com.gyh.keepaccounts.common.firstDay
 import com.gyh.keepaccounts.common.lastDay
+import com.gyh.keepaccounts.common.toEpochMilli
 import com.gyh.keepaccounts.service.BillService
 import com.gyh.keepaccounts.service.UserService
 import org.junit.jupiter.api.Test
@@ -9,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import java.time.LocalDateTime
 
-@SpringBootTest
+//@SpringBootTest
 class KeepAccountsApplicationTests {
     @Autowired
     lateinit var billService: BillService
@@ -24,13 +25,8 @@ class KeepAccountsApplicationTests {
 
     @Test
     fun nmak() {
-        val s = ""
-        val split = s.split(" ")
-        println(split)
-        println(split.size)
-        println(split.isEmpty())
-        split.forEach { println(it) }
-        println(s.isNotBlank())
+        println(firstDay().toEpochMilli())
+        println(lastDay().toEpochMilli())
     }
 
 

@@ -7,7 +7,7 @@ import org.springframework.beans.BeanUtils
  * Created by GYH on 2021/6/1
  * @apiDefine UserInfo
  * @apiSuccess (返回) {Integer} id 用户id
- * @apiSuccess (返回) {Array} files 图片列表,访问需要拼接https://repair-h-1306167226.cos.ap-nanjing.myqcloud.com/
+ * @apiSuccess (返回) {Array} files 图片列表,访问需要拼接 https://repair-h-1306167226.cos.ap-nanjing.myqcloud.com/
  * @apiSuccess (返回) {String} username 用户名
  * @apiSuccess (返回) {String} password 密码
  * @apiSuccess (返回) {String} phone 地址

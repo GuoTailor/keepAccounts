@@ -302,4 +302,21 @@ class BillController {
     fun batchUpdatePayment(@RequestBody info: BillIdListRequestInfo): ResponseInfo<Int> {
         return ResponseInfo.ok(billService.batchUpdatePayment(info.ids, info.paymentType))
     }
+
+    /**
+     * @api {get} /bill/exel 导出exel
+     * @apiDescription 导出exel
+     * @apiName outExel
+     * @apiVersion 0.0.1
+     * @apiParam {Date} startTime 开始日期 1622691796000
+     * @apiParam {Date} endTime 结束日期 1622691796000
+     * @apiSuccessExample {json} 成功返回:
+     * {"code": 1,"msg": "成功","data": "keepaccounts/20210616-111721.xls"}
+     * @apiGroup Bill
+     * @apiPermission user
+     */
+    @GetMapping("/exel")
+    fun outExel(@RequestParam startTime: Long, @RequestParam endTime: Long): ResponseInfo<String> {
+        return ResponseInfo.ok(billService.outExel(startTime.toLocalDateTime(), endTime.toLocalDateTime()))
+    }
 }

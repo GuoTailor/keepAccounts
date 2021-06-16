@@ -14,7 +14,7 @@ import org.apache.poi.hssf.usermodel.HSSFDataFormat
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.ss.usermodel.HorizontalAlignment
 import org.springframework.stereotype.Service
-import java.io.FileOutputStream
+import java.io.File
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -128,7 +128,7 @@ class BillService {
         return billMapper.batchUpdatePayment(ids, paymentType)
     }
 
-    fun outExel(startTime: LocalDateTime, endTime: LocalDateTime) {
+    fun outExel(startTime: LocalDateTime, endTime: LocalDateTime): String {
         val list = billMapper.findBillByCreateTime(startTime, endTime)
         val workbook = HSSFWorkbook()
         //创建Excel工作表对象
@@ -178,8 +178,14 @@ class BillService {
             style.dataFormat = HSSFDataFormat.getBuiltinFormat("m/d/yy h:mm")
             time.setCellStyle(style)
         }
-        val out = FileOutputStream(SimpleDateFormat("yyyyMMdd-HHmmss").format(Date()).toString() + ".xls")
-        workbook.write(out)
-        out.close()
+        val name = SimpleDateFormat("yyyyMMdd-HHmmss").format(Date()).toString() + ".xls"
+        val file = File(name)
+        if (!file.exists()) file.createNewFile()
+        file.outputStream().use {
+            workbook.write(it)
+        }
+        val updateFile = COSClient.updateExel(name, file)
+        file.delete()
+        return updateFile
     }
 }

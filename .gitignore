@@ -34,3 +34,5 @@ build/
 .vscode/
 
 kadoc/
+
+src/main/kotlin/com/gyh/keepaccounts/service/COSClient.kt
