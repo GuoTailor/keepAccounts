@@ -4,10 +4,9 @@ import com.qcloud.cos.COSClient
 import com.qcloud.cos.ClientConfig
 import com.qcloud.cos.auth.BasicCOSCredentials
 import com.qcloud.cos.http.HttpProtocol
-import com.qcloud.cos.model.DeleteObjectsRequest
-import com.qcloud.cos.model.ObjectMetadata
-import com.qcloud.cos.model.PutObjectRequest
+import com.qcloud.cos.model.*
 import com.qcloud.cos.region.Region
+import java.io.File
 import java.io.InputStream
 
 
@@ -31,12 +30,33 @@ object COSClient {
     init {
         // 这里建议设置使用 https 协议
         clientConfig.httpProtocol = HttpProtocol.https
+        // 规则1天后删除路径以 keepaccounts/exel/ 为开始的文件
+        /*val deletePrefixRule = BucketLifecycleConfiguration.Rule()
+        deletePrefixRule.id = "delete prefix keepaccounts/exel/ after 1 days"
+        deletePrefixRule.filter = LifecycleFilter(LifecyclePrefixPredicate(path + "exel/"))
+        // 文件上传或者变更后, 1天后删除
+        deletePrefixRule.expirationInDays = 1
+        // 设置规则为生效状态
+        deletePrefixRule.status = BucketLifecycleConfiguration.ENABLED
+
+        val bucketLifecycleConfiguration = BucketLifecycleConfiguration()
+        bucketLifecycleConfiguration.withRules(deletePrefixRule)
+        val configuration = SetBucketLifecycleConfigurationRequest(bucket, bucketLifecycleConfiguration)
+        // 设置生命周期
+        cosClient.setBucketLifecycleConfiguration(configuration)
+        println("ok")*/
     }
 
     fun updateFile(objectName: String, inputStream: InputStream, size: Long): String {
         val objectMetadata = ObjectMetadata()
         objectMetadata.contentLength = size
         val putObjectRequest = PutObjectRequest(bucket, path + objectName, inputStream, objectMetadata)
+        cosClient.putObject(putObjectRequest)
+        return path + objectName
+    }
+
+    fun updateExel(objectName: String, file: File): String {
+        val putObjectRequest = PutObjectRequest(bucket, path + "exel/" + objectName, file)
         cosClient.putObject(putObjectRequest)
         return path + objectName
     }
