@@ -86,6 +86,7 @@
         from ka_bill as kb
                  left join ka_user ku on ku.id = kb.user_id
         where kb.create_time between #{startTime} and #{endTime}
+        order by kb.create_time DESC
     </select>
     <select id="countConsume" parameterType="int" resultType="map">
         select sum(price * amount) as consume, sum(price * amount - ka_bill.payment) as debt

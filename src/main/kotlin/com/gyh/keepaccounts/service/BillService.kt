@@ -10,11 +10,16 @@ import com.gyh.keepaccounts.model.Bill
 import com.gyh.keepaccounts.model.PageView
 import com.gyh.keepaccounts.model.view.BillRequestInfo
 import com.gyh.keepaccounts.model.view.BillResponseInfo
+import org.apache.poi.hssf.usermodel.HSSFDataFormat
+import org.apache.poi.hssf.usermodel.HSSFWorkbook
+import org.apache.poi.ss.usermodel.HorizontalAlignment
 import org.springframework.stereotype.Service
+import java.io.FileOutputStream
 import java.math.BigDecimal
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.util.stream.Stream
+import java.util.*
 import javax.annotation.Resource
 
 /**
@@ -121,5 +126,60 @@ class BillService {
     fun batchUpdatePayment(ids: List<Int>, paymentType: String): Int {
         if (paymentType == "wzf") error("不能批量修改为未支付")
         return billMapper.batchUpdatePayment(ids, paymentType)
+    }
+
+    fun outExel(startTime: LocalDateTime, endTime: LocalDateTime) {
+        val list = billMapper.findBillByCreateTime(startTime, endTime)
+        val workbook = HSSFWorkbook()
+        //创建Excel工作表对象
+        val sheet = workbook.createSheet("工作表")
+        var style = workbook.createCellStyle()
+        style.alignment = HorizontalAlignment.CENTER
+        val row = sheet.createRow(0)
+        val cell1 = row.createCell(0)
+        cell1.setCellValue("开单人")
+        cell1.setCellStyle(style)
+        val cell2 = row.createCell(1)
+        cell2.setCellValue("车型")
+        cell2.setCellStyle(style)
+        val cell3 = row.createCell(2)
+        cell3.setCellValue("规格")
+        cell3.setCellStyle(style)
+        val cell4 = row.createCell(3)
+        cell4.setCellValue("数量")
+        cell4.setCellStyle(style)
+        val cell5 = row.createCell(4)
+        cell5.setCellValue("价格")
+        cell5.setCellStyle(style)
+        val cell6 = row.createCell(5)
+        cell6.setCellValue("备注")
+        cell6.setCellStyle(style)
+        val cell7 = row.createCell(6)
+        cell7.setCellValue("日期")
+        cell7.setCellStyle(style)
+        sheet.setColumnWidth(6, 256 * 15)
+        for (i in 1..list.size) {
+            val dataRow = sheet.createRow(i)
+            val name = dataRow.createCell(0)
+            name.setCellValue(list[i - 1].username)
+            val type = dataRow.createCell(1)
+            type.setCellValue(list[i - 1].type)
+            val specification = dataRow.createCell(2)
+            specification.setCellValue(list[i - 1].specification)
+            val amount = dataRow.createCell(3)
+            amount.setCellValue(list[i - 1].amount?.toDouble() ?: 0.0)
+            val price = dataRow.createCell(4)
+            price.setCellValue(list[i - 1].price?.toPlainString() ?: "")
+            val remark = dataRow.createCell(5)
+            remark.setCellValue(list[i - 1].remark)
+            val time = dataRow.createCell(6)
+            time.setCellValue(list[i - 1].createTime)
+            style = workbook.createCellStyle()
+            style.dataFormat = HSSFDataFormat.getBuiltinFormat("m/d/yy h:mm")
+            time.setCellStyle(style)
+        }
+        val out = FileOutputStream(SimpleDateFormat("yyyyMMdd-HHmmss").format(Date()).toString() + ".xls")
+        workbook.write(out)
+        out.close()
     }
 }

@@ -1,6 +1,7 @@
 package com.gyh.keepaccounts
 
 import com.gyh.keepaccounts.common.firstDay
+import com.gyh.keepaccounts.common.lastDay
 import com.gyh.keepaccounts.service.BillService
 import com.gyh.keepaccounts.service.UserService
 import org.junit.jupiter.api.Test
@@ -18,6 +19,7 @@ class KeepAccountsApplicationTests {
 
     @Test
     fun contextLoads() {
+        billService.outExel(firstDay(), lastDay())
     }
 
     @Test
