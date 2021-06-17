@@ -58,7 +58,7 @@ object COSClient {
     fun updateExel(objectName: String, file: File): String {
         val putObjectRequest = PutObjectRequest(bucket, path + "exel/" + objectName, file)
         cosClient.putObject(putObjectRequest)
-        return path + objectName
+        return path + "exel/" + objectName
     }
 
     fun deleteFile(objectName: String) {
