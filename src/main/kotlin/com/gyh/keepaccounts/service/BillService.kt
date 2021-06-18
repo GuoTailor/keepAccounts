@@ -152,11 +152,14 @@ class BillService {
         cell5.setCellValue("价格")
         cell5.setCellStyle(style)
         val cell6 = row.createCell(5)
-        cell6.setCellValue("备注")
+        cell6.setCellValue("付款方式")
         cell6.setCellStyle(style)
         val cell7 = row.createCell(6)
         cell7.setCellValue("日期")
         cell7.setCellStyle(style)
+        val cell8 = row.createCell(7)
+        cell8.setCellValue("备注")
+        cell8.setCellStyle(style)
         sheet.setColumnWidth(6, 256 * 15)
         for (i in 1..list.size) {
             val dataRow = sheet.createRow(i)
@@ -170,10 +173,20 @@ class BillService {
             amount.setCellValue(list[i - 1].amount?.toDouble() ?: 0.0)
             val price = dataRow.createCell(4)
             price.setCellValue(list[i - 1].price?.toPlainString() ?: "")
-            val remark = dataRow.createCell(5)
-            remark.setCellValue(list[i - 1].remark)
+            val paymentType = dataRow.createCell(5)
+            paymentType.setCellValue(
+                when (list[i - 1].paymentType) {
+                    "wx" -> "微信"
+                    "zfb" -> "支付宝"
+                    "rmb" -> "现金"
+                    "wzf" -> "未支付"
+                    else -> "未知"
+                }
+            )
             val time = dataRow.createCell(6)
             time.setCellValue(list[i - 1].createTime)
+            val remark = dataRow.createCell(7)
+            remark.setCellValue(list[i - 1].remark)
             style = workbook.createCellStyle()
             style.dataFormat = HSSFDataFormat.getBuiltinFormat("m/d/yy h:mm")
             time.setCellStyle(style)
