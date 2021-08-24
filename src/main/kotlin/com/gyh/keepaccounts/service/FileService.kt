@@ -23,7 +23,7 @@ class FileService {
             if (it.lastIndex > 0) "." + it[it.lastIndex] else null
         }
         val fileName = UUID.randomUUID().toString() + (suffix ?: "")
-        return COSClient.updateFile(fileName, file.inputStream, file.size)
+        return OSSClient.updateFile(fileName, file.inputStream)
     }
 
     fun loadFile(user: User): UserResponseInfo {
@@ -31,12 +31,12 @@ class FileService {
         return UserResponseInfo(user, root ?: listOf())
     }
 
-    fun deleteFile(path: String) = COSClient.deleteFile(path)
+    fun deleteFile(path: String) = OSSClient.deleteFile(path)
 
     fun deleteAll(files: String) {
         if (files.isNotBlank()) {
             val objectNames = files.split(" ")
-            return COSClient.deleteFile(objectNames)
+            return OSSClient.deleteFile(objectNames)
         }
     }
 }

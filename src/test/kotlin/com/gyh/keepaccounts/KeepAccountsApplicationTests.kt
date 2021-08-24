@@ -8,15 +8,19 @@ import com.gyh.keepaccounts.service.UserService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDateTime
 
-//@SpringBootTest
+@SpringBootTest
 class KeepAccountsApplicationTests {
     @Autowired
     lateinit var billService: BillService
 
     @Autowired
     lateinit var userService: UserService
+
+    @Autowired
+    lateinit var passwordEncoder: PasswordEncoder
 
     @Test
     fun contextLoads() {
@@ -25,8 +29,10 @@ class KeepAccountsApplicationTests {
 
     @Test
     fun nmak() {
+        println(passwordEncoder.encode("admin"))
         println(firstDay().toEpochMilli())
         println(lastDay().toEpochMilli())
+
     }
 
 

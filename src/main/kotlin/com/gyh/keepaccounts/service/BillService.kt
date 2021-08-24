@@ -197,7 +197,7 @@ class BillService {
         file.outputStream().use {
             workbook.write(it)
         }
-        val updateFile = COSClient.updateExel(name, file)
+        val updateFile = OSSClient.updateExel(name, file)
         file.delete()
         return updateFile
     }
